@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "compile": [
+      "chmod 777 tmp"
+    ]
+  }
+}
