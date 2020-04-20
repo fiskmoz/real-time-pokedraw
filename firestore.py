@@ -24,29 +24,17 @@ if os.environ.get('project_id') is None:
 
 
 if os.environ.get('project_id') is not None:
-    print({
-        "type": os.environ.get('type'),
-        "project_id": os.environ.get('project_id'),
-        "private_key_id": os.environ.get('private_key_id'),
-        "private_key": os.environ.get('private_key'),
-        "client_email": os.environ.get('client_email'),
-        "client_id": os.environ.get('client_id'),
-        "auth_uri": os.environ.get('auth_uri'),
-        "token_uri": os.environ.get('token_uri'),
-        "auth_provider_x509_cert_url": os.environ.get('auth_provider_x509_cert_url'),
-        "client_x509_cert_url": os.environ.get('client_x509_cert_url'),
-    })
     cred = credentials.Certificate({
-        "type": os.environ.get('type'),
-        "project_id": os.environ.get('project_id'),
-        "private_key_id": os.environ.get('private_key_id'),
-        "private_key": os.environ.get('private_key'),
-        "client_email": os.environ.get('client_email'),
-        "client_id": os.environ.get('client_id'),
-        "auth_uri": os.environ.get('auth_uri'),
-        "token_uri": os.environ.get('token_uri'),
-        "auth_provider_x509_cert_url": os.environ.get('auth_provider_x509_cert_url'),
-        "client_x509_cert_url": os.environ.get('client_x509_cert_url'),
+        "type": os.environ.get('type').replace('\\n', '\n'),
+        "project_id": os.environ.get('project_id').replace('\\n', '\n'),
+        "private_key_id": os.environ.get('private_key_id').replace('\\n', '\n'),
+        "private_key": os.environ.get('private_key').replace('\\n', '\n'),
+        "client_email": os.environ.get('client_email').replace('\\n', '\n'),
+        "client_id": os.environ.get('client_id').replace('\\n', '\n'),
+        "auth_uri": os.environ.get('auth_uri')replace('\\n', '\n'),
+        "token_uri": os.environ.get('token_uri')replace('\\n', '\n'),
+        "auth_provider_x509_cert_url": os.environ.get('auth_provider_x509_cert_url')replace('\\n', '\n'),
+        "client_x509_cert_url": os.environ.get('client_x509_cert_url')replace('\\n', '\n'),
     })
     firebase_admin.initialize_app(cred)
 
