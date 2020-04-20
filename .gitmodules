@@ -1,0 +1,3 @@
+[submodule "pickr"]
+	path = pickr
+	url = https://github.com/Simonwep/pickr.git
