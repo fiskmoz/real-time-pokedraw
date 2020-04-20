@@ -5,6 +5,7 @@ let WIDTH = canvas.clientWidth;
 let HEIGHT = canvas.clientWidth;
 let PIXELSIZE = WIDTH / DIMENSION;
 let COLOR = "#42445A";
+let FILLED = {};
 let previousPixel = [0, 0];
 
 function init() {
@@ -59,6 +60,14 @@ function init() {
   pickr.on("change", function () {
     COLOR = pickr.getColor().toHEXA().toString();
   });
+
+  window.save = function (x, y) {
+    var data = { data: FILLED };
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "draw.php?submit=1&x=" + x + "&y=" + y, true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(data));
+  };
 }
 
 function fill(event) {
@@ -73,6 +82,7 @@ function fill(event) {
 }
 
 function fillPixel(pixel) {
+  FILLED[pixel[0] + "," + pixel[1]] = COLOR;
   context.fillStyle = COLOR;
   context.fillRect(
     pixel[0] * PIXELSIZE,
