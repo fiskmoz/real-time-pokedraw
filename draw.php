@@ -9,7 +9,7 @@ if (isset($_REQUEST['submit'])){
     $key = "$x,$y";
     $filename = "tmp/" . $key;
     file_put_contents($filename, $data);
-    $result = shell_exec("python firestore.py $x $y");
+    $result = shell_exec("python firestore.py $x $y 2>&1");
     if($result != 1 ){
         print_r($result);
         die();
