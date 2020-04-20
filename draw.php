@@ -7,10 +7,10 @@ print <<<EOF
 </style>
 <body>
 
-<canvas id=draw_canvas width=800 height = 800 style='margin:8px;border:1px #0000 solid'></canvas>
+<canvas id=draw_canvas width=600 height=600 style='margin:8px;border:1px #000000 solid'></canvas>
 
 
-<script src="draw.js">
+<script src="draw.js"></script>
 </body>
 </html>
 
