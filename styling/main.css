@@ -1,0 +1,49 @@
+.header {
+  padding: 30px;
+  text-align: center;
+  background: #1abc9c;
+  color: white;
+  font-size: 30px;
+}
+
+footer {
+  display: block;
+  text-align: center;
+  background: #1abc9c;
+}
+
+body {
+  background-color: rgb(255, 255, 255);
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-top: 0px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#canvas_wrapper {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+#preview_canvas {
+  border: 1px #000000 solid;
+  cursor: pointer;
+}
+
+#draw_canvas {
+  margin: 8px;
+  border: 1px #000000 solid;
+}
+
+#selectedBox {
+  border: 1px rgba(20, 20, 11, 0.9) solid;
+  background-color: rgba(0, 0, 255, 0.3);
+  position: absolute;
+  pointer-events: none;
+}
+
+#title {
+  text-decoration: none;
+  color: white;
+}

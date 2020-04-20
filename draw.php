@@ -3,6 +3,10 @@
 $x = intval($_REQUEST['x']);
 $y = intval($_REQUEST['y']);
 
+$css = file_get_contents('styling/main.css');
+$header = file_get_contents('components/header.html');
+$footer = file_get_contents('components/footer.html');
+
 if (isset($_REQUEST['submit'])){
     $data = file_get_contents('php://input');
     
@@ -20,23 +24,25 @@ if (isset($_REQUEST['submit'])){
 print <<<EOF
 <!doctype html>
 <html>
-<style>
-</style>
-<body>
-<script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
-<script src="pickr/dist/pickr.min.js"></script>
-
-<canvas id=draw_canvas name="$x,$y" width=600 height=600 style='margin:8px;border:1px #000000 solid'></canvas>
-<div>
-    <div id=picker ></div>
-    <input typesubmit value = "Save" onclick="save($x, $y)">
-</div>
-
-
-<script src="draw.js"></script>
-</body>
+    <style>
+        $css
+    </style>
+    <header> 
+        $header
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
+        <script src="pickr/dist/pickr.min.js"></script>
+    </header>
+    <body>
+        <canvas id=draw_canvas name="$x,$y" width=600 height=600></canvas>
+        <div id="painter_footer">
+            <div id=picker ></div>
+            <input type="button" value="Clear Canvas" onclick="clear_canvas()">
+            <input type=submit value="Save" onclick="save($x, $y)">
+        </div>
+    </body>
+    <footer>
+        $footer
+        <script src="draw.js"></script>
+    </footer>
 </html>
-
 EOF;

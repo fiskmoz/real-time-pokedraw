@@ -31,11 +31,13 @@ function init() {
   let isSelected = false;
 
   document.body.addEventListener("mousemove", function (event) {
+    var viewportOffset = canvas.getBoundingClientRect();
+    if (event.srcElement.id != canvas.id) return;
     let pixel = [
       Math.floor(event.offsetX / (PIXELSIZE * DIMENSION)),
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
     ];
-    pixel = enforceConstraints(pixel);
+    pixel = EnforceConstraints(pixel);
 
     if (!selectedBox) {
       selectedBox = document.createElement("div");
@@ -45,10 +47,11 @@ function init() {
       selectedBox.style.height = size.toString() + "px";
       document.getElementById("canvas_wrapper").prepend(selectedBox);
     }
+    let pixelOffset = pixel[0] * PIXELSIZE * DIMENSION + 1;
     selectedBox.style.top =
       (pixel[1] * PIXELSIZE * DIMENSION + 1).toString() + "px";
     selectedBox.style.left =
-      (pixel[0] * PIXELSIZE * DIMENSION + 1).toString() + "px";
+      (pixelOffset + viewportOffset.left - 16).toString() + "px";
   });
 
   canvas.addEventListener("click", function (event) {
@@ -61,19 +64,6 @@ function init() {
     window.location = "draw.php?x=" + pixel[0] + "&y=" + pixel[1];
   });
 
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyAWiqFCByM9LxsLDqq71YgVCpmXhqJTyNI",
-    authDomain: "real-time-pokedraw.firebaseapp.com",
-    databaseURL: "https://real-time-pokedraw.firebaseio.com",
-    projectId: "real-time-pokedraw",
-    storageBucket: "real-time-pokedraw.appspot.com",
-    messagingSenderId: "710326983039",
-    appId: "1:710326983039:web:5a8aa14aa69555db2c624a",
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  let db = firebase.firestore();
   db.collection("app").onSnapshot(function (grid) {
     for (let change of grid.docChanges()) {
       if (!change.doc) continue;
@@ -90,7 +80,7 @@ function init() {
   });
 }
 
-function enforceConstraints(pixel) {
+function EnforceConstraints(pixel) {
   if (pixel[0] < 0) {
     pixel[0] = 0;
   }
@@ -107,11 +97,23 @@ function enforceConstraints(pixel) {
 }
 
 function fillPixel(coordinate, subcoordinate, color) {
-  context.fillStyle = color;
   let coordX = parseInt(coordinate[0]);
   let coordY = parseInt(coordinate[1]);
   let subCoordX = parseInt(subcoordinate[0]);
   let subCoordY = parseInt(subcoordinate[1]);
+  if (
+    coordX < 0 ||
+    coordY < 0 ||
+    coordX >= XREPEAT ||
+    coordY >= YREPEAT ||
+    subCoordX < 0 ||
+    subCoordX >= DIMENSION ||
+    subCoordY < 0 ||
+    subCoordY >= DIMENSION
+  ) {
+    return;
+  }
+  context.fillStyle = color;
   let x = (coordX * DIMENSION + subCoordX) * PIXELSIZE;
   let y = (coordY * DIMENSION + subCoordY) * PIXELSIZE;
   context.fillRect(x, y, PIXELSIZE, PIXELSIZE);
