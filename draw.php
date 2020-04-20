@@ -23,10 +23,12 @@ print <<<EOF
 <style>
 </style>
 <body>
+<script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
 <script src="pickr/dist/pickr.min.js"></script>
 
-<canvas id=draw_canvas width=600 height=600 style='margin:8px;border:1px #000000 solid'></canvas>
+<canvas id=draw_canvas name="$x,$y" width=600 height=600 style='margin:8px;border:1px #000000 solid'></canvas>
 <div>
     <div id=picker ></div>
     <input typesubmit value = "Save" onclick="save($x, $y)">

@@ -5,23 +5,13 @@ print <<<EOF
 <html>
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
 
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
 
 <script>
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyAWiqFCByM9LxsLDqq71YgVCpmXhqJTyNI",
-    authDomain: "real-time-pokedraw.firebaseapp.com",
-    databaseURL: "https://real-time-pokedraw.firebaseio.com",
-    projectId: "real-time-pokedraw",
-    storageBucket: "real-time-pokedraw.appspot.com",
-    messagingSenderId: "710326983039",
-    appId: "1:710326983039:web:5a8aa14aa69555db2c624a"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+
 </script>
 
 <style>

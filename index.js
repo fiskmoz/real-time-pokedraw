@@ -3,7 +3,7 @@ const context = canvas.getContext("2d");
 let PIXELSIZE = 2;
 let XREPEAT = 20;
 let YREPEAT = 15;
-let DIMENSION = 25;
+let DIMENSION = 35;
 let WIDTH = DIMENSION * XREPEAT * PIXELSIZE;
 let HEIGHT = DIMENSION * YREPEAT * PIXELSIZE;
 let selectedBox = null;
@@ -60,6 +60,34 @@ function init() {
     ];
     window.location = "draw.php?x=" + pixel[0] + "&y=" + pixel[1];
   });
+
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyAWiqFCByM9LxsLDqq71YgVCpmXhqJTyNI",
+    authDomain: "real-time-pokedraw.firebaseapp.com",
+    databaseURL: "https://real-time-pokedraw.firebaseio.com",
+    projectId: "real-time-pokedraw",
+    storageBucket: "real-time-pokedraw.appspot.com",
+    messagingSenderId: "710326983039",
+    appId: "1:710326983039:web:5a8aa14aa69555db2c624a",
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  let db = firebase.firestore();
+  db.collection("app").onSnapshot(function (grid) {
+    for (let change of grid.docChanges()) {
+      if (!change.doc) continue;
+      let key = change.doc.id;
+      let data = change.doc.data();
+      let coordinate = key.split(",");
+      let pixelData = JSON.parse(data[key]);
+      for (let subkey in pixelData["data"]) {
+        let subcoordniate = subkey.split(",");
+        let color = pixelData["data"][subcoordniate];
+        fillPixel(coordinate, subcoordniate, color);
+      }
+    }
+  });
 }
 
 function enforceConstraints(pixel) {
@@ -76,6 +104,17 @@ function enforceConstraints(pixel) {
     pixel[1] = YREPEAT - 1;
   }
   return pixel;
+}
+
+function fillPixel(coordinate, subcoordinate, color) {
+  context.fillStyle = color;
+  let coordX = parseInt(coordinate[0]);
+  let coordY = parseInt(coordinate[1]);
+  let subCoordX = parseInt(subcoordinate[0]);
+  let subCoordY = parseInt(subcoordinate[1]);
+  let x = (coordX * DIMENSION + subCoordX) * PIXELSIZE;
+  let y = (coordY * DIMENSION + subCoordY) * PIXELSIZE;
+  context.fillRect(x, y, PIXELSIZE, PIXELSIZE);
 }
 
 init();
