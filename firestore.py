@@ -31,10 +31,10 @@ if os.environ.get('project_id') is not None:
         "private_key": os.environ.get('private_key').replace('\\n', '\n'),
         "client_email": os.environ.get('client_email').replace('\\n', '\n'),
         "client_id": os.environ.get('client_id').replace('\\n', '\n'),
-        "auth_uri": os.environ.get('auth_uri')replace('\\n', '\n'),
-        "token_uri": os.environ.get('token_uri')replace('\\n', '\n'),
-        "auth_provider_x509_cert_url": os.environ.get('auth_provider_x509_cert_url')replace('\\n', '\n'),
-        "client_x509_cert_url": os.environ.get('client_x509_cert_url')replace('\\n', '\n'),
+        "auth_uri": os.environ.get('auth_uri').replace('\\n', '\n'),
+        "token_uri": os.environ.get('token_uri').replace('\\n', '\n'),
+        "auth_provider_x509_cert_url": os.environ.get('auth_provider_x509_cert_url').replace('\\n', '\n'),
+        "client_x509_cert_url": os.environ.get('client_x509_cert_url').replace('\\n', '\n'),
     })
     firebase_admin.initialize_app(cred)
 
