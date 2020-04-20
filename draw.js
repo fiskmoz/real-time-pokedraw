@@ -4,6 +4,7 @@ let DIMENSION = 25;
 let WIDTH = canvas.clientWidth;
 let HEIGHT = canvas.clientWidth;
 let PIXELSIZE = WIDTH / DIMENSION;
+let COLOR = "#42445A";
 
 function init() {
   context.strokeStyle = "rgba(0,0,0,0.1)";
@@ -21,8 +22,26 @@ function init() {
     context.stroke();
   }
 
+  const pickr = Pickr.create({
+    el: "#picker",
+    theme: "classic",
+    comparison: false,
+    components: {
+      preview: true,
+      opacity: true,
+      hue: true,
+      palette: true,
+      interaction: {
+        input: true,
+      },
+    },
+  });
+
   canvas.addEventListener("mousemove", fill, false);
   canvas.addEventListener("mousedown", fill, false);
+  pickr.on("change", function () {
+    COLOR = pickr.getColor().toHEXA().toString();
+  });
 }
 
 function fill(event) {
@@ -34,7 +53,7 @@ function fill(event) {
 }
 
 function fillPixel(pixel) {
-  context.fillStyle = "#000000";
+  context.fillStyle = COLOR;
   context.fillRect(
     pixel[0] * PIXELSIZE,
     pixel[1] * PIXELSIZE,
