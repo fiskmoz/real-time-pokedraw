@@ -40,7 +40,7 @@ print <<<EOF
                     <div id="painter_footer">
                         <div id=picker ></div>
                         <input type="button" value="Clear Canvas" onclick="clear_canvas()">
-                        <input type=submit value="Save" onclick="save($x, $y)">
+                        <input type=submit value="Save" onclick="save_canvas()">
                     </div>
                 </div>
             </div>

@@ -11,12 +11,13 @@ let previousPixel = [0, 0];
 let DRAWSTATE = 0;
 let TIMEOUT;
 let TIMER = TIMERDEFAULT;
+let XSITE = canvas.getAttribute("name").split(",")[0];
+let YSITE = canvas.getAttribute("name").split(",")[1];
 
 function init() {
   clear();
-
   db.collection("app")
-    .doc(canvas.getAttribute("name"))
+    .doc(XSITE + "," + YSITE)
     .onSnapshot(function (doc) {
       clear();
       let data = doc.data();
@@ -70,13 +71,8 @@ function init() {
     COLOR = pickr.getColor().toHEXA().toString();
   });
 
-  window.save = async function (x, y) {
-    let response = await this.asyncXhrRequest(
-      "POST",
-      "draw.php?submit=1&x=" + x + "&y=" + y,
-      { data: FILLED }
-    );
-    // Handle reponses and errors.
+  window.save_canvas = function () {
+    save();
   };
 
   window.clear_canvas = function () {
@@ -164,6 +160,16 @@ async function GetRandomPokemon() {
     ".png";
   document.getElementById("pokemon_name").innerHTML =
     pokemon_name_dto.name.english;
+}
+
+async function save() {
+  console.log("x:" + XSITE + " y:" + YSITE);
+  let response = await this.asyncXhrRequest(
+    "POST",
+    "draw.php?submit=1&x=" + XSITE + "&y=" + YSITE,
+    { data: FILLED }
+  );
+  // Handle reponses and errors.
 }
 
 init();
