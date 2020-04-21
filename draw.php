@@ -33,11 +33,24 @@ print <<<EOF
         <script src="pickr/dist/pickr.min.js"></script>
     </header>
     <body>
-        <canvas id=draw_canvas name="$x,$y" width=600 height=600></canvas>
-        <div id="painter_footer">
-            <div id=picker ></div>
-            <input type="button" value="Clear Canvas" onclick="clear_canvas()">
-            <input type=submit value="Save" onclick="save($x, $y)">
+        <div class="flexcontainer">
+            <div class="left"> 
+                <div>
+                    <canvas id=draw_canvas name="$x,$y" width=600 height=600></canvas>
+                    <div id="painter_footer">
+                        <div id=picker ></div>
+                        <input type="button" value="Clear Canvas" onclick="clear_canvas()">
+                        <input type=submit value="Save" onclick="save($x, $y)">
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="centered"> 
+                    <input type="button" value="Start Drawing" onclick="start_countdown()">
+                    <h2 id="pokemon_name"></h2>
+                    <img id="pokemon_image"></img>
+                </div>
+            </div>
         </div>
     </body>
     <footer>

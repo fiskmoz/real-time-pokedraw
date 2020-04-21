@@ -65,16 +65,21 @@ function init() {
     COLOR = pickr.getColor().toHEXA().toString();
   });
 
-  window.save = function (x, y) {
-    var data = { data: FILLED };
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "draw.php?submit=1&x=" + x + "&y=" + y, true);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(JSON.stringify(data));
+  window.save = async function (x, y) {
+    let response = await this.asyncXhrRequest(
+      "POST",
+      "draw.php?submit=1&x=" + x + "&y=" + y,
+      { data: FILLED }
+    );
+    // Handle reponses and errors.
   };
 
   window.clear_canvas = function () {
     this.clear();
+  };
+
+  window.start_countdown = function () {
+    this.GetRandomPokemon();
   };
 }
 
@@ -118,6 +123,24 @@ function clear() {
     context.lineTo(WIDTH, y);
     context.stroke();
   }
+}
+
+async function GetRandomPokemon() {
+  let pokemon_index = Math.floor(Math.random() * 810 + 1);
+  let pokemon_index_str = pokemon_index.toString();
+  let pokemon_name_dto = await asyncXhrRequest(
+    "GET",
+    "pokedex/pokedex.php?id=" + pokemon_index_str
+  );
+  pokemon_name_dto = JSON.parse(pokemon_name_dto);
+  if (pokemon_index < 100) pokemon_index_str = "0" + pokemon_index_str;
+  if (pokemon_index < 10) pokemon_index_str = "0" + pokemon_index_str;
+  document.getElementById("pokemon_image").src =
+    "https://assets.pokemon.com/assets/cms2/img/pokedex/full/" +
+    pokemon_index_str +
+    ".png";
+  document.getElementById("pokemon_name").innerHTML =
+    pokemon_name_dto.name.english;
 }
 
 init();
