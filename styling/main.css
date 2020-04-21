@@ -47,3 +47,21 @@ body {
   text-decoration: none;
   color: white;
 }
+
+/* Control the right side */
+.right {
+  width: 50%;
+}
+.left {
+  width: 50%;
+}
+
+.centered {
+  top: 50%;
+  left: 50%;
+  text-align: center;
+}
+
+.flexcontainer {
+  display: flex;
+}
