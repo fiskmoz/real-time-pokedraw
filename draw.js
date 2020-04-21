@@ -7,6 +7,7 @@ let PIXELSIZE = WIDTH / DIMENSION;
 let COLOR = "#42445A";
 let FILLED = {};
 let previousPixel = [0, 0];
+let DRAWSTATE = 0;
 
 function init() {
   clear();
@@ -14,6 +15,7 @@ function init() {
   db.collection("app")
     .doc(canvas.getAttribute("name"))
     .onSnapshot(function (doc) {
+      clear();
       let data = doc.data();
       for (let key in data) {
         let pixelData = JSON.parse(data[key]);
@@ -76,6 +78,7 @@ function init() {
 
   window.clear_canvas = function () {
     this.clear();
+    save();
   };
 
   window.start_countdown = function () {
@@ -84,8 +87,14 @@ function init() {
 }
 
 function fill(event) {
-  if (event.which == 0) return;
-  if (event.srcElement.id != canvas.id) return;
+  if (event.which == 0 || event.srcElement.id != canvas.id) {
+    if (DRAWSTATE == 1) {
+      save();
+    }
+    DRAWSTATE = 0;
+    return;
+  }
+  DRAWSTATE = 1;
   let pixel = [
     Math.floor(event.offsetX / PIXELSIZE),
     Math.floor(event.offsetY / PIXELSIZE),
