@@ -14,13 +14,20 @@ function init() {
   clear();
   let isSelected = false;
   db.collection("app").onSnapshot(function (grid) {
-    clear();
     for (let change of grid.docChanges()) {
       if (!change.doc) continue;
       let key = change.doc.id;
       let data = change.doc.data();
       let coordinate = key.split(",");
       let pixelData = JSON.parse(data[key]);
+      if (Object.keys(pixelData["data"]).length === 0) {
+        for (let x = 0; x < DIMENSION; x++) {
+          for (let y = 0; y < DIMENSION; y++) {
+            fillPixel(coordinate, [x, y], DEFAULTWHITE);
+          }
+        }
+        continue;
+      }
       for (let subkey in pixelData["data"]) {
         let subcoordniate = subkey.split(",");
         let color = pixelData["data"][subcoordniate];
