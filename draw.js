@@ -19,10 +19,18 @@ function init() {
   db.collection("app")
     .doc(XSITE + "," + YSITE)
     .onSnapshot(function (doc) {
-      clear();
+      if (DRAWSTATE == 1) return;
       let data = doc.data();
       for (let key in data) {
         let pixelData = JSON.parse(data[key]);
+        if (Object.keys(pixelData["data"]).length === 0) {
+          for (let x = 1; x < DIMENSION - 1; x++) {
+            for (let y = 1; y < DIMENSION - 1; y++) {
+              fillPixel(coordinate, [x, y], DEFAULTWHITE);
+            }
+          }
+          continue;
+        }
         for (let subkey in pixelData["data"]) {
           let subcoordniate = subkey.split(",");
           let color = pixelData["data"][subcoordniate];
