@@ -12,22 +12,7 @@ canvas.setAttribute("width", WIDTH);
 canvas.setAttribute("height", HEIGHT);
 
 function init() {
-  for (let i = 0; i < DIMENSION * XREPEAT; i++) {
-    if (i % DIMENSION != 0) {
-      continue;
-    }
-    margin = i * PIXELSIZE;
-    context.beginPath();
-    context.moveTo(margin, 0);
-    context.lineTo(margin, HEIGHT);
-    context.stroke();
-
-    context.beginPath();
-    context.moveTo(0, margin);
-    context.lineTo(WIDTH, margin);
-    context.stroke();
-  }
-
+  clear();
   let isSelected = false;
 
   document.body.addEventListener("mousemove", function (event) {
@@ -65,6 +50,7 @@ function init() {
   });
 
   db.collection("app").onSnapshot(function (grid) {
+    clear();
     for (let change of grid.docChanges()) {
       if (!change.doc) continue;
       let key = change.doc.id;
@@ -117,6 +103,26 @@ function fillPixel(coordinate, subcoordinate, color) {
   let x = (coordX * DIMENSION + subCoordX) * PIXELSIZE;
   let y = (coordY * DIMENSION + subCoordY) * PIXELSIZE;
   context.fillRect(x, y, PIXELSIZE, PIXELSIZE);
+}
+
+function clear() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.strokeStyle = "rgba(0,0,0,0.1)";
+  for (let i = 0; i < DIMENSION * XREPEAT; i++) {
+    if (i % DIMENSION != 0) {
+      continue;
+    }
+    margin = i * PIXELSIZE;
+    context.beginPath();
+    context.moveTo(margin, 0);
+    context.lineTo(margin, HEIGHT);
+    context.stroke();
+
+    context.beginPath();
+    context.moveTo(0, margin);
+    context.lineTo(WIDTH, margin);
+    context.stroke();
+  }
 }
 
 init();
