@@ -1,6 +1,7 @@
 const canvas = document.getElementById("draw_canvas");
+const timerElement = document.getElementById("timer");
 const context = canvas.getContext("2d");
-let DIMENSION = 35;
+
 let WIDTH = canvas.clientWidth;
 let HEIGHT = canvas.clientWidth;
 let PIXELSIZE = WIDTH / DIMENSION;
@@ -8,6 +9,8 @@ let COLOR = "#42445A";
 let FILLED = {};
 let previousPixel = [0, 0];
 let DRAWSTATE = 0;
+let TIMEOUT;
+let TIMER = TIMERDEFAULT;
 
 function init() {
   clear();
@@ -82,7 +85,18 @@ function init() {
   };
 
   window.start_countdown = function () {
+    TIMER = TIMERDEFAULT;
+    timerElement.innerHTML = TIMER.toString();
     this.GetRandomPokemon();
+    this.clearInterval(TIMEOUT);
+    TIMEOUT = this.setInterval(() => {
+      TIMER--;
+      timerElement.innerHTML = TIMER.toString();
+      if (TIMER <= 0) {
+        TIMER = TIMERDEFAULT;
+        this.clearInterval(TIMEOUT);
+      }
+    }, 1000);
   };
 }
 
@@ -135,7 +149,7 @@ function clear() {
 }
 
 async function GetRandomPokemon() {
-  let pokemon_index = Math.floor(Math.random() * 810 + 1);
+  let pokemon_index = Math.floor(Math.random() * AMOUNTOFPOKEMON + 1);
   let pokemon_index_str = pokemon_index.toString();
   let pokemon_name_dto = await asyncXhrRequest(
     "GET",
