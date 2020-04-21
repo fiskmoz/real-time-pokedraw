@@ -3,7 +3,6 @@ const context = canvas.getContext("2d");
 let PIXELSIZE = 2;
 let XREPEAT = 20;
 let YREPEAT = 15;
-let DIMENSION = 35;
 let WIDTH = DIMENSION * XREPEAT * PIXELSIZE;
 let HEIGHT = DIMENSION * YREPEAT * PIXELSIZE;
 let selectedBox = null;
@@ -14,6 +13,21 @@ canvas.setAttribute("height", HEIGHT);
 function init() {
   clear();
   let isSelected = false;
+  db.collection("app").onSnapshot(function (grid) {
+    clear();
+    for (let change of grid.docChanges()) {
+      if (!change.doc) continue;
+      let key = change.doc.id;
+      let data = change.doc.data();
+      let coordinate = key.split(",");
+      let pixelData = JSON.parse(data[key]);
+      for (let subkey in pixelData["data"]) {
+        let subcoordniate = subkey.split(",");
+        let color = pixelData["data"][subcoordniate];
+        fillPixel(coordinate, subcoordniate, color);
+      }
+    }
+  });
 
   document.body.addEventListener("mousemove", function (event) {
     var viewportOffset = canvas.getBoundingClientRect();
@@ -36,7 +50,7 @@ function init() {
     selectedBox.style.top =
       (pixel[1] * PIXELSIZE * DIMENSION + 1).toString() + "px";
     selectedBox.style.left =
-      (pixelOffset + viewportOffset.left - 16).toString() + "px";
+      (pixelOffset + viewportOffset.left - PADDINGLEFT).toString() + "px";
   });
 
   canvas.addEventListener("click", function (event) {
@@ -47,22 +61,6 @@ function init() {
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
     ];
     window.location = "draw.php?x=" + pixel[0] + "&y=" + pixel[1];
-  });
-
-  db.collection("app").onSnapshot(function (grid) {
-    clear();
-    for (let change of grid.docChanges()) {
-      if (!change.doc) continue;
-      let key = change.doc.id;
-      let data = change.doc.data();
-      let coordinate = key.split(",");
-      let pixelData = JSON.parse(data[key]);
-      for (let subkey in pixelData["data"]) {
-        let subcoordniate = subkey.split(",");
-        let color = pixelData["data"][subcoordniate];
-        fillPixel(coordinate, subcoordniate, color);
-      }
-    }
   });
 }
 

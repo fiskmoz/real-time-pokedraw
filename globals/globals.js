@@ -1,3 +1,8 @@
+const TIMERDEFAULT = 45;
+const AMOUNTOFPOKEMON = 810;
+const DIMENSION = 35;
+const PADDINGLEFT = 16;
+
 function asyncXhrRequest(method, url, data) {
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();

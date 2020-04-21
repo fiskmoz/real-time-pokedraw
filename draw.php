@@ -47,6 +47,7 @@ print <<<EOF
             <div class="right">
                 <div class="centered"> 
                     <input type="button" value="Start Drawing" onclick="start_countdown()">
+                    <h2 id="timer"></h2>
                     <h2 id="pokemon_name"></h2>
                     <img id="pokemon_image"></img>
                 </div>
