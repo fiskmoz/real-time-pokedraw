@@ -21,8 +21,8 @@ function init() {
       let coordinate = key.split(",");
       let pixelData = JSON.parse(data[key]);
       if (Object.keys(pixelData["data"]).length === 0) {
-        for (let x = 0; x < DIMENSION; x++) {
-          for (let y = 0; y < DIMENSION; y++) {
+        for (let x = 1; x < DIMENSION - 1; x++) {
+          for (let y = 1; y < DIMENSION - 1; y++) {
             fillPixel(coordinate, [x, y], DEFAULTWHITE);
           }
         }

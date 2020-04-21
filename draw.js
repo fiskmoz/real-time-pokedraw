@@ -84,15 +84,6 @@ function init() {
     TIMER = TIMERDEFAULT;
     timerElement.innerHTML = TIMER.toString();
     this.GetRandomPokemon();
-    this.clearInterval(TIMEOUT);
-    TIMEOUT = this.setInterval(() => {
-      TIMER--;
-      timerElement.innerHTML = TIMER.toString();
-      if (TIMER <= 0) {
-        TIMER = TIMERDEFAULT;
-        this.clearInterval(TIMEOUT);
-      }
-    }, 1000);
   };
 }
 
@@ -145,7 +136,8 @@ function clear() {
 }
 
 async function GetRandomPokemon() {
-  let pokemon_index = Math.floor(Math.random() * AMOUNTOFPOKEMON + 1);
+  let pokemon_index = GetPokedexIdMultipleGenerations();
+  if (pokemon_index == "-1") return;
   let pokemon_index_str = pokemon_index.toString();
   let pokemon_name_dto = await asyncXhrRequest(
     "GET",
@@ -160,6 +152,76 @@ async function GetRandomPokemon() {
     ".png";
   document.getElementById("pokemon_name").innerHTML =
     pokemon_name_dto.name.english;
+  this.clearInterval(TIMEOUT);
+  TIMEOUT = this.setInterval(() => {
+    TIMER--;
+    timerElement.innerHTML = TIMER.toString();
+    if (TIMER <= 0) {
+      TIMER = TIMERDEFAULT;
+      this.clearInterval(TIMEOUT);
+    }
+  }, 1000);
+}
+
+function GetPokedexIdMultipleGenerations() {
+  let possiblePokemon = [];
+  document.getElementById("gen1").checked
+    ? possiblePokemon.push(Math.floor(Math.random() * GEN1INTERVALS[1] + 1))
+    : null;
+  document.getElementById("gen2").checked
+    ? possiblePokemon.push(
+        Math.floor(
+          Math.random() * (GEN2INTERVALS[1] - GEN2INTERVALS[0]) +
+            GEN2INTERVALS[0]
+        )
+      )
+    : null;
+  document.getElementById("gen3").checked
+    ? possiblePokemon.push(
+        Math.floor(
+          Math.random() * (GEN3INTERVALS[1] - GEN3INTERVALS[0]) +
+            GEN3INTERVALS[0]
+        )
+      )
+    : null;
+  document.getElementById("gen4").checked
+    ? possiblePokemon.push(
+        Math.floor(
+          Math.random() * (GEN4INTERVALS[1] - GEN4INTERVALS[0]) +
+            GEN4INTERVALS[0]
+        )
+      )
+    : null;
+  document.getElementById("gen5").checked
+    ? possiblePokemon.push(
+        Math.floor(
+          Math.random() * (GEN5INTERVALS[1] - GEN5INTERVALS[0]) +
+            GEN5INTERVALS[0]
+        )
+      )
+    : null;
+  document.getElementById("gen6").checked
+    ? possiblePokemon.push(
+        Math.floor(
+          Math.random() * (GEN6INTERVALS[1] - GEN6INTERVALS[0]) +
+            GEN6INTERVALS[0]
+        )
+      )
+    : null;
+  document.getElementById("gen7").checked
+    ? possiblePokemon.push(
+        Math.floor(
+          Math.random() * (GEN7INTERVALS[1] - GEN7INTERVALS[0]) +
+            GEN7INTERVALS[0]
+        )
+      )
+    : null;
+  console.log(possiblePokemon);
+  return possiblePokemon.length
+    ? possiblePokemon[
+        Math.floor(Math.random() * possiblePokemon.length)
+      ].toString()
+    : "-1";
 }
 
 async function save() {
