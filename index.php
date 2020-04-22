@@ -10,9 +10,9 @@ print <<<EOF
     <style>
         $css
     </style>
-    <header>
+    <head>
         $header
-    </header>
+    </head>
     <body>
         <div id="canvas_wrapper">
             <canvas id=preview_canvas></canvas>

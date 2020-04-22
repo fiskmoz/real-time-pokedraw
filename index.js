@@ -55,7 +55,7 @@ function init() {
     }
     let pixelOffset = pixel[0] * PIXELSIZE * DIMENSION + 1;
     selectedBox.style.top =
-      (pixel[1] * PIXELSIZE * DIMENSION + 1).toString() + "px";
+      (pixel[1] * PIXELSIZE * DIMENSION + 1 + PADDINGTOP).toString() + "px";
     selectedBox.style.left =
       (pixelOffset + viewportOffset.left - PADDINGLEFT).toString() + "px";
   });

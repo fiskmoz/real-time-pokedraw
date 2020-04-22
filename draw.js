@@ -1,5 +1,6 @@
 const canvas = document.getElementById("draw_canvas");
 const timerElement = document.getElementById("timer");
+const statusElement = document.getElementById("drawing_status");
 const context = canvas.getContext("2d");
 
 let WIDTH = canvas.clientWidth;
@@ -7,26 +8,28 @@ let HEIGHT = canvas.clientWidth;
 let PIXELSIZE = WIDTH / DIMENSION;
 let COLOR = "#42445A";
 let FILLED = {};
-let previousPixel = [0, 0];
-let DRAWSTATE = 0;
+let previousPixel = [-1, -1];
 let TIMEOUT;
 let TIMER = TIMERDEFAULT;
 let XSITE = canvas.getAttribute("name").split(",")[0];
 let YSITE = canvas.getAttribute("name").split(",")[1];
+let isWatching = true;
+let isDrawing = false;
 
 function init() {
   clear();
   db.collection("app")
     .doc(XSITE + "," + YSITE)
     .onSnapshot(function (doc) {
-      if (DRAWSTATE == 1) return;
+      if (isDrawing) return;
+      if (!isWatching) return;
       let data = doc.data();
       for (let key in data) {
         let pixelData = JSON.parse(data[key]);
         if (Object.keys(pixelData["data"]).length === 0) {
           for (let x = 1; x < DIMENSION - 1; x++) {
             for (let y = 1; y < DIMENSION - 1; y++) {
-              fillPixel(coordinate, [x, y], DEFAULTWHITE);
+              fillPixel([x, y], DEFAULTWHITE);
             }
           }
           continue;
@@ -72,6 +75,8 @@ function init() {
       },
     },
   });
+  let checkboxJson = JSON.parse(localStorage.getItem("generations"));
+  if (!!checkboxJson) SetDefaultCheckboxes(checkboxJson);
 
   canvas.addEventListener("mousemove", fill, false);
   canvas.addEventListener("mousedown", fill, false);
@@ -79,8 +84,9 @@ function init() {
     COLOR = pickr.getColor().toHEXA().toString();
   });
 
-  window.save_canvas = function () {
+  window.stop_drawing = function () {
     save();
+    this.StopDrawing();
   };
 
   window.clear_canvas = function () {
@@ -96,14 +102,16 @@ function init() {
 }
 
 function fill(event) {
+  if (isWatching) return;
   if (event.which == 0 || event.srcElement.id != canvas.id) {
-    if (DRAWSTATE == 1) {
+    if (isDrawing) {
       save();
+      previousPixel = [-1, -1];
     }
-    DRAWSTATE = 0;
+    isDrawing = false;
     return;
   }
-  DRAWSTATE = 1;
+  isDrawing = true;
   let pixel = [
     Math.floor(event.offsetX / PIXELSIZE),
     Math.floor(event.offsetY / PIXELSIZE),
@@ -165,18 +173,27 @@ async function GetRandomPokemon() {
     TIMER--;
     timerElement.innerHTML = TIMER.toString();
     if (TIMER <= 0) {
-      TIMER = TIMERDEFAULT;
-      this.clearInterval(TIMEOUT);
+      StopDrawing();
     }
   }, 1000);
+  isWatching = false;
+  statusElement.innerHTML = "Status: Drawing";
+}
+
+function StopDrawing() {
+  isWatching = true;
+  isDrawing = false;
+  statusElement.innerHTML = "Status: Watching";
+  TIMER = TIMERDEFAULT;
+  this.clearInterval(TIMEOUT);
 }
 
 function GetPokedexIdMultipleGenerations() {
   let possiblePokemon = [];
-  document.getElementById("gen1").checked
+  let gen1 = document.getElementById("gen1").checked
     ? possiblePokemon.push(Math.floor(Math.random() * GEN1INTERVALS[1] + 1))
     : null;
-  document.getElementById("gen2").checked
+  let gen2 = document.getElementById("gen2").checked
     ? possiblePokemon.push(
         Math.floor(
           Math.random() * (GEN2INTERVALS[1] - GEN2INTERVALS[0]) +
@@ -184,7 +201,7 @@ function GetPokedexIdMultipleGenerations() {
         )
       )
     : null;
-  document.getElementById("gen3").checked
+  let gen3 = document.getElementById("gen3").checked
     ? possiblePokemon.push(
         Math.floor(
           Math.random() * (GEN3INTERVALS[1] - GEN3INTERVALS[0]) +
@@ -192,7 +209,7 @@ function GetPokedexIdMultipleGenerations() {
         )
       )
     : null;
-  document.getElementById("gen4").checked
+  let gen4 = document.getElementById("gen4").checked
     ? possiblePokemon.push(
         Math.floor(
           Math.random() * (GEN4INTERVALS[1] - GEN4INTERVALS[0]) +
@@ -200,7 +217,7 @@ function GetPokedexIdMultipleGenerations() {
         )
       )
     : null;
-  document.getElementById("gen5").checked
+  let gen5 = document.getElementById("gen5").checked
     ? possiblePokemon.push(
         Math.floor(
           Math.random() * (GEN5INTERVALS[1] - GEN5INTERVALS[0]) +
@@ -208,7 +225,7 @@ function GetPokedexIdMultipleGenerations() {
         )
       )
     : null;
-  document.getElementById("gen6").checked
+  let gen6 = document.getElementById("gen6").checked
     ? possiblePokemon.push(
         Math.floor(
           Math.random() * (GEN6INTERVALS[1] - GEN6INTERVALS[0]) +
@@ -216,7 +233,7 @@ function GetPokedexIdMultipleGenerations() {
         )
       )
     : null;
-  document.getElementById("gen7").checked
+  let gen7 = document.getElementById("gen7").checked
     ? possiblePokemon.push(
         Math.floor(
           Math.random() * (GEN7INTERVALS[1] - GEN7INTERVALS[0]) +
@@ -224,7 +241,18 @@ function GetPokedexIdMultipleGenerations() {
         )
       )
     : null;
-  console.log(possiblePokemon);
+  localStorage.setItem(
+    "generations",
+    JSON.stringify({
+      "1": gen1,
+      "2": gen2,
+      "3": gen3,
+      "4": gen4,
+      "5": gen5,
+      "6": gen6,
+      "7": gen7,
+    })
+  );
   return possiblePokemon.length
     ? possiblePokemon[
         Math.floor(Math.random() * possiblePokemon.length)
@@ -240,6 +268,13 @@ async function save() {
     { data: FILLED }
   );
   // Handle reponses and errors.
+}
+
+function SetDefaultCheckboxes(choices) {
+  for (let gen = 1; gen < NOOFGENERATIONS + 1; gen++) {
+    let checkbox = document.getElementById("gen" + gen.toString());
+    !!choices[gen] ? (checkbox.checked = true) : (checkbox.checked = false);
+  }
 }
 
 init();
