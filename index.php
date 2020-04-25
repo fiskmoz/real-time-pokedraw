@@ -3,6 +3,7 @@
 $css = file_get_contents('styling/main.css');
 $header = file_get_contents('components/header.html');
 $footer = file_get_contents('components/footer.html');
+$modal = file_get_contents('components/modal.html');
 
 print <<<EOF
 <!doctype html>
@@ -10,6 +11,7 @@ print <<<EOF
     <style>
         $css
     </style>
+    $modal
     <head>
         $header
     </head>

@@ -13,6 +13,33 @@ const GEN6INTERVALS = [650, 721];
 const GEN7INTERVALS = [722, 809];
 const NOOFGENERATIONS = 7;
 
+const modal = document.getElementById("user_modal");
+const modal_text_input = document.getElementById("modal_text_input");
+const modal_close = document.getElementById("modal_close_btn");
+const rename_button = document.getElementById("rename_button");
+
+modal_close.onclick = function () {
+  if (modal_text_input.value == "") {
+    // GIVE ERROR MSG, NICKNAME NEEDS TO BE SET.
+    return;
+  }
+  USER = modal_text_input.value;
+  localStorage.setItem("user", USER);
+  modal.style.display = "none";
+  document.body.style.overflow = "";
+};
+
+rename_button.onclick = function () {
+  localStorage.removeItem("user");
+  window.location = "/";
+};
+
+let USER = localStorage.getItem("user");
+if (USER == null) {
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
 function asyncXhrRequest(method, url, data) {
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
