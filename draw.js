@@ -113,12 +113,13 @@ function init() {
     this.GetRandomPokemon();
   };
 
-  window.onbeforeunload = async function (e) {
+  window.addEventListener("beforeunload", async function (e) {
     let res = await asyncXhrRequest(
       "GET",
       "draw.php?leaving=1&x=" + XSITE + "&y=" + YSITE + "&user=" + USER
     );
-  };
+    return;
+  });
 }
 
 function fill(event) {
@@ -283,7 +284,7 @@ function GetPokedexIdMultipleGenerations() {
 async function save() {
   let response = await this.asyncXhrRequest(
     "POST",
-    "draw.php?submit=1&x=" + XSITE + "&y=" + YSITE,
+    "draw.php?submit=1&x=" + XSITE + "&y=" + YSITE + "&user=" + USER,
     { data: FILLED }
   );
   // Handle reponses and errors.
