@@ -2,10 +2,19 @@
 
 $x = intval($_REQUEST['x']);
 $y = intval($_REQUEST['y']);
+$user = $_REQUEST['user'];    
 
 $css = file_get_contents('styling/main.css');
 $header = file_get_contents('components/header.html');
 $footer = file_get_contents('components/footer.html');
+$modal = file_get_contents('components/modal.html');
+
+if (!isset($user))
+{
+    echo $user + "user is not set";
+    return;
+}
+
 
 if (isset($_REQUEST['submit'])){
     $data = file_get_contents('php://input');
@@ -13,12 +22,28 @@ if (isset($_REQUEST['submit'])){
     $key = "$x,$y";
     $filename = "tmp/" . $key;
     file_put_contents($filename, $data);
-    $result = shell_exec("python firestore.py $x $y 2>&1");
+    $result = shell_exec("python scripts/draw_save.py $x $y 2>&1");
     if($result != 1 ){
         print_r($result);
         die();
     }
     return;
+}
+
+if (isset($_REQUEST['leaving'])){
+    $result = shell_exec("python scripts/user_leave.py $x  $y '$user' 2>&1");
+    if($result != 1 ){
+        print_r($result);
+        die();
+    }
+    return;
+}
+else {
+    $result = shell_exec("python scripts/user_join.py $x  $y '$user' 2>&1");
+    if($result != 1 ){
+        print_r($result);
+        die();
+    }
 }
 
 print <<<EOF
@@ -27,6 +52,7 @@ print <<<EOF
     <style>
         $css
     </style>
+        $modal
     <head> 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
         <script src="pickr/dist/pickr.min.js"></script>
@@ -34,7 +60,7 @@ print <<<EOF
     </head>
     <body>
         <div class="flexcontainer">
-            <div class="left"> 
+            <div class="fixedWidth650"> 
                 <div>
                     <div class="painter_header">
                         <div id=picker ></div>
@@ -47,7 +73,7 @@ print <<<EOF
                     <canvas id=draw_canvas name="$x,$y" width=600 height=600></canvas>
                 </div>
             </div>
-            <div class="right">
+            <div class="fixedWidth550">
                 <div class="centered"> 
                     <div class="info_header">
                         Generations 
@@ -86,6 +112,16 @@ print <<<EOF
                         <h2 id="timer"></h2>
                         <h2 id="pokemon_name"></h2>
                         <img id="pokemon_image"></img>
+                    </div>
+                </div>
+            </div>
+            <div class="fixedWidth550">
+                <div class="centered"> 
+                    <div class="info_header">
+                        <h3> Players in lobby: </h3>
+                        <ul class="user-list" id="users_list"></ul>
+                    </div>
+                    <div class="info">
                     </div>
                 </div>
             </div>
