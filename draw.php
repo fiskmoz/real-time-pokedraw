@@ -2,49 +2,11 @@
 
 $x = intval($_REQUEST['x']);
 $y = intval($_REQUEST['y']);
-$user = $_REQUEST['user'];    
 
 $css = file_get_contents('styling/main.css');
 $header = file_get_contents('components/header.html');
 $footer = file_get_contents('components/footer.html');
 $modal = file_get_contents('components/modal.html');
-
-if (!isset($user))
-{
-    echo $user + "user is not set";
-    return;
-}
-
-
-if (isset($_REQUEST['submit'])){
-    $data = file_get_contents('php://input');
-    
-    $key = "$x,$y";
-    $filename = "tmp/" . $key;
-    file_put_contents($filename, $data);
-    $result = shell_exec("python scripts/draw_save.py $x $y 2>&1");
-    if($result != 1 ){
-        print_r($result);
-        die();
-    }
-    return;
-}
-
-if (isset($_REQUEST['leaving'])){
-    $result = shell_exec("python scripts/user_leave.py $x  $y '$user' 2>&1");
-    if($result != 1 ){
-        print_r($result);
-        die();
-    }
-    return;
-}
-else {
-    $result = shell_exec("python scripts/user_join.py $x  $y '$user' 2>&1");
-    if($result != 1 ){
-        print_r($result);
-        die();
-    }
-}
 
 print <<<EOF
 <!doctype html>
