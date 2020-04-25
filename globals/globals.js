@@ -18,10 +18,12 @@ const modal_text_input = document.getElementById("modal_text_input");
 const modal_close = document.getElementById("modal_close_btn");
 const rename_button = document.getElementById("rename_button");
 
+const nickname_regex = /^[a-zA-Z0-9_ ]*$/g;
+
 modal_close.onclick = function () {
   if (
     modal_text_input.value == "" ||
-    !modal_text_input.matches(/^[a-zA-Z0-9_]*$/)
+    !modal_text_input.value.match(nickname_regex)
   ) {
     // GIVE ERROR MSG, NICKNAME NEEDS TO BE SET.
     return;
