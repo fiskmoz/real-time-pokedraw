@@ -9,7 +9,7 @@ import json
 # this will set the required credentials for firebase into os config for localhost.
 # rename firebase credentials file to firebase_cred.json
 if os.environ.get('project_id') is None:
-    with open("firebase_cred.json") as json_file:
+    with open("../firebase_cred.json") as json_file:
         data = json.load(json_file)
         os.environ['type'] = data['type']
         os.environ['project_id'] = data['project_id']

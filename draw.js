@@ -116,9 +116,18 @@ function init() {
   window.addEventListener("beforeunload", async function (e) {
     let res = await asyncXhrRequest(
       "GET",
-      "draw.php?leaving=1&x=" + XSITE + "&y=" + YSITE + "&user=" + USER
+      "endpoints/leaving.php?x=" + XSITE + "&y=" + YSITE + "&user=" + USER,
+      null
     );
     return;
+  });
+
+  window.addEventListener("DOMContentLoaded", async function (e) {
+    let res = await asyncXhrRequest(
+      "GET",
+      "endpoints/joining.php?x=" + XSITE + "&y=" + YSITE + "&user=" + USER,
+      null
+    );
   });
 }
 
@@ -178,7 +187,8 @@ async function GetRandomPokemon() {
   let pokemon_index_str = pokemon_index.toString();
   let pokemon_name_dto = await asyncXhrRequest(
     "GET",
-    "pokedex/pokedex.php?id=" + pokemon_index_str
+    "pokedex/pokedex.php?id=" + pokemon_index_str,
+    null
   );
   pokemon_name_dto = JSON.parse(pokemon_name_dto);
   if (pokemon_index < 100) pokemon_index_str = "0" + pokemon_index_str;
@@ -284,7 +294,7 @@ function GetPokedexIdMultipleGenerations() {
 async function save() {
   let response = await this.asyncXhrRequest(
     "POST",
-    "draw.php?submit=1&x=" + XSITE + "&y=" + YSITE + "&user=" + USER,
+    "endpoints/submit_drawing.php?x=" + XSITE + "&y=" + YSITE,
     { data: FILLED }
   );
   // Handle reponses and errors.
