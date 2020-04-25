@@ -2,6 +2,7 @@ const canvas = document.getElementById("draw_canvas");
 const timerElement = document.getElementById("timer");
 const statusElement = document.getElementById("drawing_status");
 const context = canvas.getContext("2d");
+const users_list = document.getElementById("users_list");
 
 let WIDTH = canvas.clientWidth;
 let HEIGHT = canvas.clientWidth;
@@ -39,6 +40,18 @@ function init() {
           let color = pixelData["data"][subcoordniate];
           fillPixel(subcoordniate, color);
         }
+      }
+    });
+
+  db.collection("users")
+    .doc(XSITE + "," + YSITE)
+    .onSnapshot(function (doc) {
+      users_list.innerHTML = "";
+      let data = doc.data();
+      for (let key in data) {
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(data[key]));
+        users_list.appendChild(li);
       }
     });
 
@@ -98,6 +111,13 @@ function init() {
     TIMER = TIMERDEFAULT;
     timerElement.innerHTML = TIMER.toString();
     this.GetRandomPokemon();
+  };
+
+  window.onbeforeunload = async function (e) {
+    let res = await asyncXhrRequest(
+      "GET",
+      "draw.php?leaving=1&x=" + XSITE + "&y=" + YSITE + "&user=" + USER
+    );
   };
 }
 
@@ -261,7 +281,6 @@ function GetPokedexIdMultipleGenerations() {
 }
 
 async function save() {
-  console.log("x:" + XSITE + " y:" + YSITE);
   let response = await this.asyncXhrRequest(
     "POST",
     "draw.php?submit=1&x=" + XSITE + "&y=" + YSITE,

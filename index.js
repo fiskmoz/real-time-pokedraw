@@ -67,7 +67,8 @@ function init() {
       Math.floor(event.offsetX / (PIXELSIZE * DIMENSION)),
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
     ];
-    window.location = "draw.php?x=" + pixel[0] + "&y=" + pixel[1];
+    window.location =
+      "draw.php?x=" + pixel[0] + "&y=" + pixel[1] + "&user=" + USER;
   });
 }
 
