@@ -31,6 +31,7 @@ footer {
   );
   height: auto;
   color: white;
+  border-top: 1px black solid;
 }
 
 body {
@@ -57,13 +58,18 @@ body {
   cursor: pointer;
 }
 
-#draw_canvas {
-  margin: 8px;
-  border: 1px #000000 solid;
+.draw_canvas_watching {
+  margin: 8px 0 8px 0px;
+  border: 2px red solid;
+}
+
+.draw_canvas_drawing {
+  margin: 8px 0 8px 0px;
+  border: 2px forestgreen solid;
 }
 
 #selectedBox {
-  border: 1px rgba(20, 20, 11, 0.9) solid;
+  border: 2px rgba(20, 20, 11, 0.9) solid;
   background-color: rgba(0, 0, 255, 0.3);
   position: absolute;
   pointer-events: none;
@@ -91,15 +97,18 @@ body {
 }
 
 .painter_header {
-  border: black 1px solid;
+  border: black 2px solid;
   max-width: 610px;
+  max-height: 40px;
   padding: 5px;
   display: flex;
 }
 
 .info_header {
-  border: black 1px solid;
+  height: 39px;
+  border: black 2px solid;
   padding: 5px;
+  font-size: 16px;
 }
 
 .checkbox_container {
@@ -163,12 +172,20 @@ body {
   margin-left: 25px;
 }
 
-.info {
-  margin-top: 15px;
+.pokemon-info {
+  margin-top: 8px;
   padding: 5px;
-  border: black 1px solid;
+  border: black 2px solid;
   margin-bottom: 15px;
-  min-width: 300px;
+  min-width: 475px;
+}
+
+.user-info {
+  margin-top: 8px;
+  padding: 5px;
+  border: black 2px solid;
+  margin-bottom: 15px;
+  min-width: 210px;
 }
 
 .pickr {
@@ -185,6 +202,7 @@ body {
   text-decoration: none;
   display: inline-block;
   font-size: 16px;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
 
 .button:hover {
@@ -202,6 +220,7 @@ body {
   font-size: 25px;
   text-align: center;
   margin: auto;
+  font-weight: bolder;
 }
 
 .modal {

@@ -219,19 +219,25 @@ async function GetRandomPokemon() {
   TIMEOUT = this.setInterval(() => {
     TIMER--;
     timerElement.innerHTML = TIMER.toString();
+    if (TIMER <= 10) {
+      TIMER % 2 == 0
+        ? canvas.setAttribute("class", "draw_canvas_watching")
+        : canvas.setAttribute("class", "draw_canvas_drawing");
+    }
     if (TIMER <= 0) {
       StopDrawing();
     }
   }, 1000);
   isWatching = false;
-  statusElement.innerHTML = "Status: Drawing";
+  canvas.setAttribute("class", "draw_canvas_drawing");
 }
 
 function StopDrawing() {
+  canvas.setAttribute("class", "draw_canvas_watching");
   isWatching = true;
   isDrawing = false;
-  statusElement.innerHTML = "Status: Watching";
   TIMER = TIMERDEFAULT;
+  timerElement.innerHTML = "";
   this.clearInterval(TIMEOUT);
 }
 
