@@ -7,6 +7,7 @@ $css = file_get_contents('styling/main.css');
 $header = file_get_contents('components/header.html');
 $footer = file_get_contents('components/footer.html');
 $modal = file_get_contents('components/modal.html');
+$ad_sense = getenv('ad_sense');
 
 print <<<EOF
 <!doctype html>
@@ -14,13 +15,14 @@ print <<<EOF
     <style>
         $css
     </style>
-        $modal
     <head> 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
         <script src="pickr/dist/pickr.min.js"></script>
+        $ad_sense
         $header
     </head>
     <body>
+        $modal
         <div class="flexcontainer">
             <div class="fixedWidth650"> 
                 <div>
