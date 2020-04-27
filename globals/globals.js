@@ -17,6 +17,7 @@ const modal = document.getElementById("user_modal");
 const modal_text_input = document.getElementById("modal_text_input");
 const modal_close = document.getElementById("modal_close_btn");
 const rename_button = document.getElementById("rename_button");
+const modal_error_msg = document.getElementById("modal_error_msg");
 
 const nickname_regex = /^[a-zA-Z0-9_ ]*$/g;
 
@@ -25,7 +26,9 @@ modal_close.onclick = function () {
     modal_text_input.value == "" ||
     !modal_text_input.value.match(nickname_regex)
   ) {
-    // GIVE ERROR MSG, NICKNAME NEEDS TO BE SET.
+    modal_error_msg.innerHTML =
+      "Nickname cannot be empty or contains invalid characters";
+    modal_error_msg.setAttribute("class", "error-container");
     return;
   }
   USER = modal_text_input.value;

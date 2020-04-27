@@ -227,3 +227,7 @@ body {
 .user-list {
   list-style-type: none;
 }
+
+.error-container {
+  border: 5px solid red;
+}

@@ -2,7 +2,7 @@
 
 $x = intval($_REQUEST['x']);
 $y = intval($_REQUEST['y']);
-$user = $_REQUEST['user'];    
+$user = str_replace(' ','_',$_REQUEST['user']);    
 
 
 if (!isset($x))

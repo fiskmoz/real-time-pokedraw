@@ -50,7 +50,7 @@ function init() {
       let data = doc.data();
       for (let key in data) {
         var li = document.createElement("li");
-        li.appendChild(document.createTextNode(data[key]));
+        li.appendChild(document.createTextNode(data[key]["user"]));
         users_list.appendChild(li);
       }
     });

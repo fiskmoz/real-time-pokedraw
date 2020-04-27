@@ -2,6 +2,7 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+import datetime
 import os
 import sys
 import json
@@ -43,11 +44,25 @@ if os.environ.get('project_id') is not None:
     key = sys.argv[1] + ',' + sys.argv[2]
 
     user = sys.argv[3].replace("'", '')
-    db.collection(u'users').document(key).update(
-        {
-            user: user
-        }
-    )
+
+    room_ref = db.collection(u'users').document(key)
+    timeoffset = datetime.timedelta(minutes=60*3)
+    users_to_delete = []
+    users_dict = room_ref.get().to_dict()
+    for user_in_room in users_dict:
+        if user_in_room == user:
+            continue
+        if users_dict[user_in_room]['timestamp'].replace(tzinfo=None) < (datetime.datetime.now() - timeoffset):
+            users_to_delete.append(users_dict[user_in_room]['user'])
+
+    data = {}
+    data[user] = {
+        'user': user,
+        'timestamp': datetime.datetime.now().replace(tzinfo=None)
+    }
+    for user_to_delete in users_to_delete:
+        data[user_to_delete] = firestore.DELETE_FIELD  # pylint: disable=no-member
+    room_ref.update(data)
     print(1)
 else:
     print("could not create firebase client")
