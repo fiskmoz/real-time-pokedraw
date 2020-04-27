@@ -30,11 +30,11 @@ print <<<EOF
                         <div id=picker ></div>
                         <input type="button" class="button" value="Clear Canvas" onclick="clear_canvas()">
                         <input type="button" class="button" value="Stop Drawing" onclick="stop_drawing()">
-                        <div class="drawing_status" id="drawing_status">
-                            Status: Watching
+                        <div class="drawing_status">
+                            <div id="timer"></div>
                         </div>
                     </div>
-                    <canvas id=draw_canvas name="$x,$y" width=600 height=600></canvas>
+                    <canvas id=draw_canvas class="draw_canvas_watching" name="$x,$y" width=600 height=600></canvas>
                 </div>
             </div>
             <div class="fixedWidth550">
@@ -71,9 +71,8 @@ print <<<EOF
                             <span class="checkmark"></span>
                         </label>
                     </div>
-                    <div class="info">
+                    <div class="pokemon-info">
                         <input type="button" class="button" value="Start Drawing" onclick="start_countdown()">
-                        <h2 id="timer"></h2>
                         <h2 id="pokemon_name"></h2>
                         <img id="pokemon_image"></img>
                     </div>
@@ -81,11 +80,11 @@ print <<<EOF
             </div>
             <div class="fixedWidth550">
                 <div class="centered"> 
-                    <div class="info_header">
-                        <h3> Players in lobby: </h3>
-                        <ul class="user-list" id="users_list"></ul>
+                    <div class="info_header drawing_status">
+                        <b>Players in lobby:</b>
                     </div>
-                    <div class="info">
+                    <div class="user-info">
+                        <ul class="user-list" id="users_list"></ul>
                     </div>
                 </div>
             </div>
