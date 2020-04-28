@@ -2,6 +2,7 @@ const canvas = document.getElementById("draw_canvas");
 const timerElement = document.getElementById("timer");
 const statusElement = document.getElementById("drawing_status");
 const context = canvas.getContext("2d");
+context.translate(0.5, 0.5);
 const users_list = document.getElementById("users_list");
 
 let WIDTH = canvas.clientWidth;
@@ -30,7 +31,7 @@ function init() {
         if (Object.keys(pixelData["data"]).length === 0) {
           for (let x = 1; x < DIMENSION - 1; x++) {
             for (let y = 1; y < DIMENSION - 1; y++) {
-              fillPixel([x, y], DEFAULTWHITE);
+              clearPixel([x, y]);
             }
           }
           continue;
@@ -163,7 +164,7 @@ function fill(event) {
     Math.floor(event.offsetY / PIXELSIZE),
   ];
   if (pixel[0] == previousPixel[0] && pixel[1] == previousPixel[1]) return;
-  event.ctrlKey ? fillPixel(pixel, DEFAULTWHITE) : fillPixel(pixel, COLOR);
+  event.ctrlKey ? clearPixel(pixel) : fillPixel(pixel, COLOR);
   previousPixel = pixel;
 }
 
@@ -171,11 +172,22 @@ function fillPixel(pixel, color) {
   FILLED[pixel[0] + "," + pixel[1]] = color;
   context.fillStyle = color;
   context.fillRect(
-    pixel[0] * PIXELSIZE,
-    pixel[1] * PIXELSIZE,
-    PIXELSIZE - 1,
-    PIXELSIZE - 1
+    Math.floor(pixel[0] * PIXELSIZE) + 0.5,
+    Math.floor(pixel[1] * PIXELSIZE) + 0.5,
+    Math.floor(PIXELSIZE - 1.5) + 0.5,
+    Math.floor(PIXELSIZE - 1.5) + 0.5
   );
+}
+
+function clearPixel(pixel) {
+  FILLED[pixel[0] + "," + pixel[1]] = DEFAULTWHITE;
+  let cpx = Math.floor(pixel[0] * PIXELSIZE) + 0.5;
+  let cpy = Math.floor(pixel[1] * PIXELSIZE) + 0.5;
+  let cps = Math.floor(PIXELSIZE - 1.2) + 0.5;
+  context.fillStyle = DEFAULTWHITE;
+  for (let i = 0; i < 3; i++) {
+    context.fillRect(cpx, cpy, cps, cps);
+  }
 }
 
 function clear() {
