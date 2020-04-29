@@ -1,14 +1,14 @@
-const canvas = document.getElementById("preview_canvas");
-const context = canvas.getContext("2d");
-let PIXELSIZE = 2;
-let XREPEAT = 20;
-let YREPEAT = 15;
-let WIDTH = DIMENSION * XREPEAT * PIXELSIZE;
-let HEIGHT = DIMENSION * YREPEAT * PIXELSIZE;
+const canvas_element = document.getElementById("preview_canvas");
+const context = canvas_element.getContext("2d");
+const PIXELSIZE = 2;
+const XREPEAT = 20;
+const YREPEAT = 15;
+const WIDTH = DIMENSION * XREPEAT * PIXELSIZE;
+const HEIGHT = DIMENSION * YREPEAT * PIXELSIZE;
 let selectedBox = null;
 
-canvas.setAttribute("width", WIDTH);
-canvas.setAttribute("height", HEIGHT);
+canvas_element.setAttribute("width", WIDTH);
+canvas_element.setAttribute("height", HEIGHT);
 
 function init() {
   clear();
@@ -37,8 +37,8 @@ function init() {
   });
 
   document.body.addEventListener("mousemove", function (event) {
-    var viewportOffset = canvas.getBoundingClientRect();
-    if (event.srcElement.id != canvas.id) return;
+    var viewportOffset = canvas_element.getBoundingClientRect();
+    if (event.srcElement.id != canvas_element.id) return;
     let pixel = [
       Math.floor(event.offsetX / (PIXELSIZE * DIMENSION)),
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
@@ -48,6 +48,7 @@ function init() {
     if (!selectedBox) {
       selectedBox = document.createElement("div");
       selectedBox.setAttribute("id", "selectedBox");
+      selectedBox.setAttribute("class", "selected-box");
       let size = DIMENSION * PIXELSIZE - 2;
       selectedBox.style.width = size.toString() + "px";
       selectedBox.style.height = size.toString() + "px";
@@ -57,10 +58,10 @@ function init() {
     selectedBox.style.top =
       (pixel[1] * PIXELSIZE * DIMENSION + 1 + PADDINGTOP).toString() + "px";
     selectedBox.style.left =
-      (pixelOffset + viewportOffset.left - PADDINGLEFT).toString() + "px";
+      (pixelOffset + viewportOffset.left).toString() + "px";
   });
 
-  canvas.addEventListener("click", function (event) {
+  canvas_element.addEventListener("click", function (event) {
     if (isSelected) return;
     isSelected = true;
     let pixel = [
@@ -68,7 +69,7 @@ function init() {
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
     ];
     window.location =
-      "draw.php?x=" + pixel[0] + "&y=" + pixel[1] + "&user=" + USER;
+      "draw.php?x=" + pixel[0] + "&y=" + pixel[1] + "&user=" + globalUser;
   });
 }
 
@@ -112,7 +113,7 @@ function fillPixel(coordinate, subcoordinate, color) {
 }
 
 function clear() {
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas_element.width, canvas_element.height);
   context.strokeStyle = "rgba(0,0,0,0.1)";
   for (let i = 0; i < DIMENSION * XREPEAT; i++) {
     if (i % DIMENSION != 0) {

@@ -18,8 +18,8 @@ print <<<EOF
     </head>
     <body>
         $modal
-        <div id="canvas_wrapper">
-            <canvas id=preview_canvas></canvas>
+        <div id="canvas_wrapper" class="preview-canvas-wrapper">
+            <canvas id=preview_canvas class="preview-canvas" ></canvas>
         </div>
     </body>
     <footer>

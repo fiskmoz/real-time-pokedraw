@@ -35,53 +35,12 @@ footer {
 }
 
 body {
-  background-color: rgb(255, 255, 255);
-  margin-left: 16px;
-  margin-right: 16px;
+  background-color: floralwhite;
+  margin-left: 0px;
+  margin-right: 0px;
   margin-top: 0px;
   margin-bottom: 0px;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-#canvas_wrapper {
-  position: relative;
-  width: 100%;
-  text-align: center;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  border-top: #000000 1px solid;
-  border-bottom: #000000 1px solid;
-}
-
-#preview_canvas {
-  border: 1px #000000 solid;
-  cursor: pointer;
-}
-
-.draw_canvas_watching {
-  margin: 8px 0 8px 0px;
-  border: 2px red solid;
-}
-
-.draw_canvas_drawing {
-  margin: 8px 0 8px 0px;
-  border: 2px forestgreen solid;
-}
-
-#selectedBox {
-  border: 2px rgba(20, 20, 11, 0.9) solid;
-  background-color: rgba(0, 0, 255, 0.3);
-  position: absolute;
-  pointer-events: none;
-}
-
-.fixedWidth550 {
-  width: 550px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-.fixedWidth650 {
-  width: 650px;
 }
 
 .centered {
@@ -90,28 +49,87 @@ body {
   text-align: center;
 }
 
-.flexcontainer {
-  display: flex;
+.preview-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-top: #000000 1px solid;
+}
+
+.preview-canvas {
+  border: 1px #000000 solid;
+  cursor: pointer;
+  background-color: white;
+}
+
+.draw-canvas-wrapper {
+  display: inline-block;
+  max-width: 610px;
+  min-width: 610px;
+  vertical-align: top;
+}
+
+.draw-canvas {
+  margin: 8px 0 8px 0px;
+  background-color: white;
+}
+
+.watching {
+  border: 2px red solid;
+}
+
+.drawing {
+  border: 2px forestgreen solid;
+}
+
+.selected-box {
+  border: 2px rgba(20, 20, 11, 0.9) solid;
+  background-color: rgba(0, 0, 255, 0.3);
+  position: absolute;
+  pointer-events: none;
+}
+
+.players-in-lobby-wrapper {
+  display: inline-block;
+  padding-left: 10px;
+  max-width: 400px;
+  min-width: 300px;
+  vertical-align: top;
+}
+
+.generation-selection-wrapper {
+  display: inline-block;
+  padding-left: 10px;
+  max-width: 600px;
+  min-width: 550px;
+  vertical-align: top;
+}
+
+.drawing-wrapper {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
   border-top: black 1px solid;
   padding-top: 5px;
 }
 
-.painter_header {
+.painter-header {
   border: black 2px solid;
-  max-width: 610px;
   max-height: 40px;
   padding: 5px;
   display: flex;
 }
 
-.info_header {
+.info-header {
   height: 39px;
   border: black 2px solid;
   padding: 5px;
   font-size: 16px;
 }
 
-.checkbox_container {
+.checkbox-container {
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -121,7 +139,7 @@ body {
   user-select: none;
 }
 
-.checkbox_container input {
+.checkbox-container input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
@@ -138,11 +156,11 @@ body {
   background-color: #eee;
 }
 
-.checkbox_container:hover input ~ .checkmark {
+.checkbox-container:hover input ~ .checkmark {
   background-color: #ccc;
 }
 
-.checkbox_container input:checked ~ .checkmark {
+.checkbox-container input:checked ~ .checkmark {
   background-color: #2196f3;
 }
 
@@ -152,11 +170,11 @@ body {
   display: none;
 }
 
-.checkbox_container input:checked ~ .checkmark:after {
+.checkbox-container input:checked ~ .checkmark:after {
   display: block;
 }
 
-.checkbox_container .checkmark:after {
+.checkbox-container .checkmark:after {
   left: 5px;
   top: 3px;
   width: 5px;
@@ -168,7 +186,7 @@ body {
   transform: rotate(45deg);
 }
 
-.checkbox_container + .checkbox_container {
+.checkbox-container + .checkbox-container {
   margin-left: 25px;
 }
 
@@ -185,7 +203,6 @@ body {
   padding: 5px;
   border: black 2px solid;
   margin-bottom: 15px;
-  min-width: 210px;
 }
 
 .pickr {
@@ -200,6 +217,7 @@ body {
   padding: 7px 16px;
   text-align: center;
   text-decoration: none;
+  cursor: pointer;
   display: inline-block;
   font-size: 16px;
   box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
@@ -216,7 +234,7 @@ body {
   margin-left: 10px;
 }
 
-.drawing_status {
+.drawing-status {
   font-size: 25px;
   text-align: center;
   margin: auto;
