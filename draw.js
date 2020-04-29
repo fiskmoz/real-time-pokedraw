@@ -15,6 +15,7 @@ let timer = TIMERDEFAULT;
 let isWatching = true;
 let isDrawing = false;
 let selectedColor = "#42445A";
+let usersInLobby = "";
 
 context.translate(0.5, 0.5);
 
@@ -26,32 +27,34 @@ function init() {
       if (isDrawing) return;
       if (!isWatching) return;
       let data = doc.data();
-      for (let key in data) {
-        let pixelData = JSON.parse(data[key]);
+      let pixelData;
+      try {
+        pixelData = JSON.parse(data["pixels"]);
+      } catch {
+        pixelData = null;
+      }
+      if (pixelData != null) {
         if (Object.keys(pixelData["data"]).length === 0) {
           for (let x = 1; x < DIMENSION - 1; x++) {
             for (let y = 1; y < DIMENSION - 1; y++) {
               clearPixel([x, y]);
             }
           }
-          continue;
-        }
-        for (let subkey in pixelData["data"]) {
-          let subcoordniate = subkey.split(",");
-          let color = pixelData["data"][subcoordniate];
-          fillPixel(subcoordniate, color);
+        } else {
+          for (let subkey in pixelData["data"]) {
+            let subcoordniate = subkey.split(",");
+            let color = pixelData["data"][subcoordniate];
+            fillPixel(subcoordniate, color);
+          }
         }
       }
-    });
-
-  db.collection("users")
-    .doc(XSITE + "," + YSITE)
-    .onSnapshot(function (doc) {
+      let newUsers = JSON.stringify(data["users"]);
+      if (usersInLobby == newUsers || newUsers == "{}") return;
+      usersInLobby = newUsers;
       users_list_element.innerHTML = "";
-      let data = doc.data();
-      for (let key in data) {
+      for (let user in data["users"]) {
         var li = document.createElement("li");
-        li.appendChild(document.createTextNode(data[key]["user"]));
+        li.appendChild(document.createTextNode(data["users"][user]["user"]));
         users_list_element.appendChild(li);
       }
     });
