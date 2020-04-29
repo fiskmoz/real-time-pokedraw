@@ -18,7 +18,6 @@ print <<<EOF
     <head> 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
         <script src="pickr/dist/pickr.min.js"></script>
-        $ad_sense
         $header
     </head>
     <body>
