@@ -16,8 +16,7 @@
 }
 
 footer {
-  display: block;
-  text-align: center;
+  display: inline-block;
   background-image: linear-gradient(
     to right,
     rgba(244, 42, 53, 0.9),
@@ -30,6 +29,7 @@ footer {
     rgba(148, 109, 155, 0.9)
   );
   height: auto;
+  width: 100%;
   color: white;
   border-top: 1px black solid;
 }
@@ -282,4 +282,19 @@ body {
   left: 50%;
   margin-left: -50px;
   font-size: 17px;
+}
+
+.promo-message {
+  display: inline-block;
+  background-color: dodgerblue;
+  margin: 10px;
+  padding: 10px;
+  text-align: left;
+}
+
+.function-footer {
+  display: inline-block;
+  padding: 10px;
+  vertical-align: top;
+  float: right;
 }

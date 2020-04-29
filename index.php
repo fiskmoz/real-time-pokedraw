@@ -13,7 +13,6 @@ print <<<EOF
         $css
     </style>
     <head>
-        $ad_sense
         $header
     </head>
     <body>

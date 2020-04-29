@@ -1,4 +1,6 @@
 {
+  "name": "real-time-pokedraw",
+  "description": "a real time version of pokedraw!",
   "scripts": {
     "compile": [
       "chmod 777 tmp"
