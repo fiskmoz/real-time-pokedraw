@@ -44,9 +44,9 @@ if os.environ.get('project_id') is not None:
 
     user = sys.argv[3].replace("'", '')
 
-    db.collection(u'users').document(key).update(
+    db.collection(u'app').document(key).update(
         {
-            user: firestore.DELETE_FIELD  # pylint: disable=no-member
+            'users.' + user: firestore.DELETE_FIELD  # pylint: disable=no-member
         }
     )
     print(1)

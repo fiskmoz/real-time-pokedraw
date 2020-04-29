@@ -46,10 +46,10 @@ if os.environ.get('project_id') is not None:
     file = open(filename, 'r')
     value = "\n".join(file.readlines())
     data = {
-        key: value
+        "pixels": value
     }
 
-    db.collection(u'app').document(key).set(data)
+    db.collection(u'app').document(key).update(data)
     print(1)
 else:
     print("could not create firebase client")
