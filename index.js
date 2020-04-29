@@ -6,6 +6,9 @@ const YREPEAT = 15;
 const WIDTH = DIMENSION * XREPEAT * PIXELSIZE;
 const HEIGHT = DIMENSION * YREPEAT * PIXELSIZE;
 let selectedBox = null;
+let tooltip = null;
+let usersInRoomsDict = {};
+let previouslySelectedBox = [];
 
 canvas_element.setAttribute("width", WIDTH);
 canvas_element.setAttribute("height", HEIGHT);
@@ -19,7 +22,24 @@ function init() {
       let key = change.doc.id;
       let data = change.doc.data();
       let coordinate = key.split(",");
-      let pixelData = JSON.parse(data[key]);
+      let pixelData;
+      let userData;
+      try {
+        pixelData = JSON.parse(data["pixels"]);
+      } catch {
+        continue;
+      }
+      try {
+        userData = data["users"];
+      } catch {
+        userData = {};
+      }
+      if (JSON.stringify(userData) == "{}") {
+        usersInRoomsDict[key] = "0";
+      } else {
+        let usersLen = Object.keys(userData).length;
+        if (usersInRoomsDict[key] != usersLen) usersInRoomsDict[key] = usersLen;
+      }
       if (Object.keys(pixelData["data"]).length === 0) {
         for (let x = 1; x < DIMENSION - 1; x++) {
           for (let y = 1; y < DIMENSION - 1; y++) {
@@ -44,16 +64,33 @@ function init() {
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
     ];
     pixel = EnforceConstraints(pixel);
-
+    if (
+      previouslySelectedBox[0] == pixel[0] &&
+      previouslySelectedBox[1] == pixel[1]
+    )
+      return;
+    previouslySelectedBox = pixel;
     if (!selectedBox) {
       selectedBox = document.createElement("div");
-      selectedBox.setAttribute("id", "selectedBox");
+      selectedBox.setAttribute("id", "selected_box");
       selectedBox.setAttribute("class", "selected-box");
       let size = DIMENSION * PIXELSIZE - 2;
       selectedBox.style.width = size.toString() + "px";
       selectedBox.style.height = size.toString() + "px";
       document.getElementById("canvas_wrapper").prepend(selectedBox);
+      selectedBox.innerHTML =
+        '<span id = "selected_box_tooltip" class="tooltiptext"></span>';
+      tooltip = document.getElementById("selected_box_tooltip");
     }
+    let usersInRoom =
+      usersInRoomsDict[pixel[0].toString() + "," + pixel[1].toString()];
+    if (usersInRoom == null) usersInRoom = "0";
+    tooltip.innerHTML =
+      "Room: " +
+      (pixel[0] + 1 + pixel[1] * 20) +
+      "</br>" +
+      "Players: " +
+      usersInRoom;
     let pixelOffset = pixel[0] * PIXELSIZE * DIMENSION + 1;
     selectedBox.style.top =
       (pixel[1] * PIXELSIZE * DIMENSION + 1 + PADDINGTOP).toString() + "px";

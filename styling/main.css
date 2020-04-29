@@ -207,11 +207,11 @@ body {
 
 .pickr {
   padding: 1px;
-  border: black 5px solid;
+  border: black 4px solid;
 }
 
 .button {
-  background-color: #4caf50;
+  background-color: dodgerblue;
   border: none;
   color: white;
   padding: 7px 16px;
@@ -267,4 +267,19 @@ body {
 
 .error-container {
   border: 5px solid red;
+}
+
+.selected-box .tooltiptext {
+  width: 100px;
+  background-color: dodgerblue;
+  color: white;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -50px;
+  font-size: 17px;
 }
