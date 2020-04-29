@@ -1,22 +1,22 @@
-const canvas = document.getElementById("draw_canvas");
-const timerElement = document.getElementById("timer");
-const statusElement = document.getElementById("drawing_status");
-const context = canvas.getContext("2d");
-context.translate(0.5, 0.5);
-const users_list = document.getElementById("users_list");
+const canvas_element = document.getElementById("draw_canvas");
+const timer_element = document.getElementById("timer");
+const context = canvas_element.getContext("2d");
+const users_list_element = document.getElementById("users_list");
+const XSITE = canvas_element.getAttribute("name").split(",")[0];
+const YSITE = canvas_element.getAttribute("name").split(",")[1];
+const WIDTH = canvas_element.clientWidth;
+const HEIGHT = canvas_element.clientWidth;
+const PIXELSIZE = WIDTH / DIMENSION;
 
-let WIDTH = canvas.clientWidth;
-let HEIGHT = canvas.clientWidth;
-let PIXELSIZE = WIDTH / DIMENSION;
-let COLOR = "#42445A";
-let FILLED = {};
+let filledPixels = {};
 let previousPixel = [-1, -1];
-let TIMEOUT;
-let TIMER = TIMERDEFAULT;
-let XSITE = canvas.getAttribute("name").split(",")[0];
-let YSITE = canvas.getAttribute("name").split(",")[1];
+let timeout;
+let timer = TIMERDEFAULT;
 let isWatching = true;
 let isDrawing = false;
+let selectedColor = "#42445A";
+
+context.translate(0.5, 0.5);
 
 function init() {
   clear();
@@ -47,12 +47,12 @@ function init() {
   db.collection("users")
     .doc(XSITE + "," + YSITE)
     .onSnapshot(function (doc) {
-      users_list.innerHTML = "";
+      users_list_element.innerHTML = "";
       let data = doc.data();
       for (let key in data) {
         var li = document.createElement("li");
         li.appendChild(document.createTextNode(data[key]["user"]));
-        users_list.appendChild(li);
+        users_list_element.appendChild(li);
       }
     });
 
@@ -108,10 +108,10 @@ function init() {
   let checkboxJson = JSON.parse(localStorage.getItem("generations"));
   if (!!checkboxJson) SetDefaultCheckboxes(checkboxJson);
 
-  canvas.addEventListener("mousemove", fill, false);
-  canvas.addEventListener("mousedown", fill, false);
+  canvas_element.addEventListener("mousemove", fill, false);
+  canvas_element.addEventListener("mousedown", fill, false);
   pickr.on("change", function () {
-    COLOR = pickr.getColor().toHEXA().toString();
+    selectedColor = pickr.getColor().toHEXA().toString();
   });
 
   window.stop_drawing = function () {
@@ -125,15 +125,20 @@ function init() {
   };
 
   window.start_countdown = function () {
-    TIMER = TIMERDEFAULT;
-    timerElement.innerHTML = TIMER.toString();
+    timer = TIMERDEFAULT;
+    timer_element.innerHTML = timer.toString();
     this.GetRandomPokemon();
   };
 
   window.addEventListener("beforeunload", async function (e) {
     let res = await asyncXhrRequest(
       "GET",
-      "endpoints/leaving.php?x=" + XSITE + "&y=" + YSITE + "&user=" + USER,
+      "endpoints/leaving.php?x=" +
+        XSITE +
+        "&y=" +
+        YSITE +
+        "&user=" +
+        globalUser,
       null
     );
     return;
@@ -142,7 +147,12 @@ function init() {
   window.addEventListener("DOMContentLoaded", async function (e) {
     let res = await asyncXhrRequest(
       "GET",
-      "endpoints/joining.php?x=" + XSITE + "&y=" + YSITE + "&user=" + USER,
+      "endpoints/joining.php?x=" +
+        XSITE +
+        "&y=" +
+        YSITE +
+        "&user=" +
+        globalUser,
       null
     );
   });
@@ -150,7 +160,7 @@ function init() {
 
 function fill(event) {
   if (isWatching) return;
-  if (event.which == 0 || event.srcElement.id != canvas.id) {
+  if (event.which == 0 || event.srcElement.id != canvas_element.id) {
     if (isDrawing) {
       save();
       previousPixel = [-1, -1];
@@ -164,12 +174,12 @@ function fill(event) {
     Math.floor(event.offsetY / PIXELSIZE),
   ];
   if (pixel[0] == previousPixel[0] && pixel[1] == previousPixel[1]) return;
-  event.ctrlKey ? clearPixel(pixel) : fillPixel(pixel, COLOR);
+  event.ctrlKey ? clearPixel(pixel) : fillPixel(pixel, selectedColor);
   previousPixel = pixel;
 }
 
 function fillPixel(pixel, color) {
-  FILLED[pixel[0] + "," + pixel[1]] = color;
+  filledPixels[pixel[0] + "," + pixel[1]] = color;
   context.fillStyle = color;
   context.fillRect(
     Math.floor(pixel[0] * PIXELSIZE) + 0.5,
@@ -180,7 +190,7 @@ function fillPixel(pixel, color) {
 }
 
 function clearPixel(pixel) {
-  FILLED[pixel[0] + "," + pixel[1]] = DEFAULTWHITE;
+  filledPixels[pixel[0] + "," + pixel[1]] = DEFAULTWHITE;
   let cpx = Math.floor(pixel[0] * PIXELSIZE) + 0.5;
   let cpy = Math.floor(pixel[1] * PIXELSIZE) + 0.5;
   let cps = Math.floor(PIXELSIZE - 1.2) + 0.5;
@@ -191,8 +201,8 @@ function clearPixel(pixel) {
 }
 
 function clear() {
-  FILLED = {};
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  filledPixels = {};
+  context.clearRect(0, 0, canvas_element.width, canvas_element.height);
   context.strokeStyle = "rgba(0,0,0,0.1)";
   for (let i = 0; i < DIMENSION; i++) {
     x = Math.floor((i * WIDTH) / DIMENSION);
@@ -227,30 +237,30 @@ async function GetRandomPokemon() {
     ".png";
   document.getElementById("pokemon_name").innerHTML =
     pokemon_name_dto.name.english;
-  this.clearInterval(TIMEOUT);
-  TIMEOUT = this.setInterval(() => {
-    TIMER--;
-    timerElement.innerHTML = TIMER.toString();
-    if (TIMER <= 10) {
-      TIMER % 2 == 0
-        ? canvas.setAttribute("class", "draw_canvas_watching")
-        : canvas.setAttribute("class", "draw_canvas_drawing");
+  this.clearInterval(timeout);
+  timeout = this.setInterval(() => {
+    timer--;
+    timer_element.innerHTML = timer.toString();
+    if (timer <= 10) {
+      timer % 2 == 0
+        ? canvas_element.setAttribute("class", "draw-canvas watching")
+        : canvas_element.setAttribute("class", "draw-canvas drawing");
     }
-    if (TIMER <= 0) {
+    if (timer <= 0) {
       StopDrawing();
     }
   }, 1000);
   isWatching = false;
-  canvas.setAttribute("class", "draw_canvas_drawing");
+  canvas_element.setAttribute("class", "draw-canvas drawing");
 }
 
 function StopDrawing() {
-  canvas.setAttribute("class", "draw_canvas_watching");
+  canvas_element.setAttribute("class", "draw-canvas watching");
   isWatching = true;
   isDrawing = false;
-  TIMER = TIMERDEFAULT;
-  timerElement.innerHTML = "";
-  this.clearInterval(TIMEOUT);
+  timer = TIMERDEFAULT;
+  timer_element.innerHTML = "";
+  this.clearInterval(timeout);
 }
 
 function GetPokedexIdMultipleGenerations() {
@@ -329,7 +339,7 @@ async function save() {
   let response = await this.asyncXhrRequest(
     "POST",
     "endpoints/submit_drawing.php?x=" + XSITE + "&y=" + YSITE,
-    { data: FILLED }
+    { data: filledPixels }
   );
   // Handle reponses and errors.
 }
