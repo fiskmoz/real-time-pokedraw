@@ -58,15 +58,25 @@ if os.environ.get('project_id') is not None:
                     if room_dict[room_key][room_user]['timestamp'].replace(tzinfo=None) < (datetime.datetime.now() - timeoffset):
                         users_to_delete.append(
                             room_dict[room_key][room_user]['user'])
+        data = {}
+        data["users." + user] = {
+            'user': user,
+            'timestamp': datetime.datetime.now().replace(tzinfo=None)
+        }
+        for user_to_delete in users_to_delete:
+            data["users." + user_to_delete] = firestore.DELETE_FIELD  # pylint: disable=no-member
+        room_ref.update(data)
+    else:
+        room_ref.set({
+            "pixels": '{"data":{}}',
+            "users": {
+                user: {
+                    "user": user,
+                    "timestamp": datetime.datetime.now().replace(tzinfo=None)
+                }
+            }
+        })
 
-    data = {"users": {}}
-    data["users"][user] = {
-        'user': user,
-        'timestamp': datetime.datetime.now().replace(tzinfo=None)
-    }
-    for user_to_delete in users_to_delete:
-        data["users"][user_to_delete] = firestore.DELETE_FIELD  # pylint: disable=no-member
-    room_ref.update(data)
     print(1)
 else:
     print("could not create firebase client")

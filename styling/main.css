@@ -203,6 +203,7 @@ body {
   padding: 5px;
   border: black 2px solid;
   margin-bottom: 15px;
+  display: flex;
 }
 
 .pickr {
@@ -293,7 +294,6 @@ body {
 }
 
 .function-footer {
-  display: inline-block;
   padding: 10px;
   vertical-align: top;
   float: right;

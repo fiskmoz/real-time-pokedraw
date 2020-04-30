@@ -82,6 +82,7 @@ print <<<EOF
                     </div>
                     <div class="user-info">
                         <ul class="user-list" id="users_list"></ul>
+                        <ul class="user-list" id="users_timestamp_list"></ul>
                     </div>
                 </div>
             </div>

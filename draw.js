@@ -2,6 +2,9 @@ const canvas_element = document.getElementById("draw_canvas");
 const timer_element = document.getElementById("timer");
 const context = canvas_element.getContext("2d");
 const users_list_element = document.getElementById("users_list");
+const users_timestamp_list_element = document.getElementById(
+  "users_timestamp_list"
+);
 const XSITE = canvas_element.getAttribute("name").split(",")[0];
 const YSITE = canvas_element.getAttribute("name").split(",")[1];
 const WIDTH = canvas_element.clientWidth;
@@ -16,6 +19,7 @@ let isWatching = true;
 let isDrawing = false;
 let selectedColor = "#42445A";
 let usersInLobby = "";
+let hasLeft = false;
 
 context.translate(0.5, 0.5);
 
@@ -27,6 +31,7 @@ function init() {
       if (isDrawing) return;
       if (!isWatching) return;
       let data = doc.data();
+      if (data == null) return;
       let pixelData;
       try {
         pixelData = JSON.parse(data["pixels"]);
@@ -51,11 +56,24 @@ function init() {
       let newUsers = JSON.stringify(data["users"]);
       if (usersInLobby == newUsers || newUsers == "{}") return;
       usersInLobby = newUsers;
-      users_list_element.innerHTML = "";
+      users_list_element.innerHTML = "<li> <b> Names: </b> </li> </br>";
+      users_timestamp_list_element.innerHTML =
+        "<li> <b>Joined: </b> </li> </br>";
       for (let user in data["users"]) {
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(data["users"][user]["user"]));
-        users_list_element.appendChild(li);
+        let liu = document.createElement("li");
+        let lit = document.createElement("li");
+        let offsetTime = new Date(
+          data["users"][user]["timestamp"].toDate().getTime() +
+            data["users"][user]["timestamp"].toDate().getTimezoneOffset() *
+              60 *
+              1000
+        );
+        liu.appendChild(document.createTextNode(data["users"][user]["user"]));
+        lit.appendChild(
+          document.createTextNode(offsetTime.toLocaleTimeString())
+        );
+        users_list_element.appendChild(liu);
+        users_timestamp_list_element.appendChild(lit);
       }
     });
 
@@ -159,19 +177,24 @@ function init() {
       null
     );
   });
+  window.addEventListener("mouseup", (e) => {
+    if (event.srcElement.id != canvas_element.id) return;
+    isDrawing = false;
+    save();
+    previousPixel = [-1, -1];
+    return;
+  });
+
+  window.addEventListener("mousedown", (e) => {
+    if (event.srcElement.id != canvas_element.id) return;
+    isDrawing = true;
+    fill(e);
+  });
 }
 
 function fill(event) {
   if (isWatching) return;
-  if (event.which == 0 || event.srcElement.id != canvas_element.id) {
-    if (isDrawing) {
-      save();
-      previousPixel = [-1, -1];
-    }
-    isDrawing = false;
-    return;
-  }
-  isDrawing = true;
+  if (event.srcElement.id != canvas_element.id || !isDrawing) return;
   let pixel = [
     Math.floor(event.offsetX / PIXELSIZE),
     Math.floor(event.offsetY / PIXELSIZE),
