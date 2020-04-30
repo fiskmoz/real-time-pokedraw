@@ -42,11 +42,7 @@ function init() {
         for (let user in userData) {
           if (
             new Date(
-              userData[user]["timestamp"].toDate().getTime() +
-                (userData[user]["timestamp"].toDate().getTimezoneOffset() +
-                  180) *
-                  60 *
-                  1000
+              userData[user]["timestamp"].toDate().getTime() + 180 * 60 * 1000
             ).getTime() > Date.now()
           ) {
             isRoomActive = false;

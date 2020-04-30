@@ -63,10 +63,7 @@ function init() {
         let liu = document.createElement("li");
         let lit = document.createElement("li");
         let offsetTime = new Date(
-          data["users"][user]["timestamp"].toDate().getTime() +
-            data["users"][user]["timestamp"].toDate().getTimezoneOffset() *
-              60 *
-              1000
+          data["users"][user]["timestamp"].toDate().getTime()
         );
         liu.appendChild(document.createTextNode(data["users"][user]["user"]));
         lit.appendChild(
