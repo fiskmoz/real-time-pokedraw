@@ -35,10 +35,25 @@ function init() {
         userData = {};
       }
       if (JSON.stringify(userData) == "{}") {
-        usersInRoomsDict[key] = "0";
+        usersInRoomsDict[key] = ["0", true];
       } else {
-        let usersLen = Object.keys(userData).length;
-        if (usersInRoomsDict[key] != usersLen) usersInRoomsDict[key] = usersLen;
+        let isRoomActive = true;
+        let usersLen = 0;
+        for (let user in userData) {
+          if (
+            new Date(
+              userData[user]["timestamp"].toDate().getTime() +
+                (userData[user]["timestamp"].toDate().getTimezoneOffset() +
+                  180) *
+                  60 *
+                  1000
+            ).getTime() > Date.now()
+          ) {
+            isRoomActive = false;
+          }
+          usersLen++;
+        }
+        usersInRoomsDict[key] = [usersLen, isRoomActive];
       }
       if (Object.keys(pixelData["data"]).length === 0) {
         for (let x = 1; x < DIMENSION - 1; x++) {
@@ -84,13 +99,16 @@ function init() {
     }
     let usersInRoom =
       usersInRoomsDict[pixel[0].toString() + "," + pixel[1].toString()];
-    if (usersInRoom == null) usersInRoom = "0";
+    if (usersInRoom == null) usersInRoom = ["0", true];
     tooltip.innerHTML =
       "Room: " +
       (pixel[0] + 1 + pixel[1] * 20) +
       "</br>" +
       "Players: " +
-      usersInRoom;
+      usersInRoom[0];
+    usersInRoom[1]
+      ? selectedBox.setAttribute("class", "selected-box-active")
+      : selectedBox.setAttribute("class", "selected-box");
     let pixelOffset = pixel[0] * PIXELSIZE * DIMENSION + 1;
     selectedBox.style.top =
       (pixel[1] * PIXELSIZE * DIMENSION + 1 + PADDINGTOP).toString() + "px";

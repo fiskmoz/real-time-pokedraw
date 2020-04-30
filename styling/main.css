@@ -85,7 +85,14 @@ body {
 }
 
 .selected-box {
-  border: 2px rgba(20, 20, 11, 0.9) solid;
+  border: 2px rgba(163, 10, 10, 0.9) solid;
+  background-color: rgba(0, 0, 255, 0.3);
+  position: absolute;
+  pointer-events: none;
+}
+
+.selected-box-active {
+  border: 2px rgba(72, 219, 52, 0.9) solid;
   background-color: rgba(0, 0, 255, 0.3);
   position: absolute;
   pointer-events: none;
@@ -270,7 +277,7 @@ body {
   border: 5px solid red;
 }
 
-.selected-box .tooltiptext {
+.tooltiptext {
   width: 100px;
   background-color: dodgerblue;
   color: white;
