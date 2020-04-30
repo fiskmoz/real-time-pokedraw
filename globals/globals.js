@@ -18,7 +18,10 @@ let modal_text_input = document.getElementById("modal_text_input");
 let modal_close = document.getElementById("modal_close_btn");
 let rename_button = document.getElementById("rename_button");
 let modal_error_msg = document.getElementById("modal_error_msg");
+let how_to_button = document.getElementById("how_to_button");
+let how_to_div = document.getElementById("how_to_div");
 let globalUser;
+let howToHidden = true;
 
 modal_close.onclick = function () {
   if (
@@ -39,6 +42,13 @@ modal_close.onclick = function () {
 rename_button.onclick = function () {
   localStorage.removeItem("user");
   window.location = "/";
+};
+
+how_to_button.onclick = function () {
+  howToHidden
+    ? how_to_div.setAttribute("class", "centered")
+    : how_to_div.setAttribute("class", "centered hidden");
+  howToHidden = !howToHidden;
 };
 
 globalUser = localStorage.getItem("user");
