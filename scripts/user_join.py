@@ -55,13 +55,13 @@ if os.environ.get('project_id') is not None:
                 for room_user in room_dict[room_key]:
                     if room_user == user:
                         continue
-                    if room_dict[room_key][room_user]['timestamp'].replace(tzinfo=None) < (datetime.datetime.now() - timeoffset):
+                    if room_dict[room_key][room_user]['timestamp'].replace(tzinfo=None) < (datetime.datetime.utcnow().replace(tzinfo=None) - timeoffset):
                         users_to_delete.append(
                             room_dict[room_key][room_user]['user'])
         data = {}
         data["users." + user] = {
             'user': user,
-            'timestamp': datetime.datetime.now().replace(tzinfo=None)
+            'timestamp': datetime.datetime.utcnow()
         }
         for user_to_delete in users_to_delete:
             data["users." + user_to_delete] = firestore.DELETE_FIELD  # pylint: disable=no-member
@@ -72,7 +72,7 @@ if os.environ.get('project_id') is not None:
             "users": {
                 user: {
                     "user": user,
-                    "timestamp": datetime.datetime.now().replace(tzinfo=None)
+                    "timestamp": datetime.datetime.utcnow()
                 }
             }
         })
