@@ -69,7 +69,14 @@ function init() {
 
   document.body.addEventListener("mousemove", function (event) {
     var viewportOffset = canvas_element.getBoundingClientRect();
-    if (event.srcElement.id != canvas_element.id) return;
+    if (event.srcElement.id != canvas_element.id) {
+      if (selectedBox == null) return;
+      if (tooltip.classList.contains("tooltiptext")) {
+        selectedBox.setAttribute("class", "hidden");
+        tooltip.setAttribute("class", "hidden");
+      }
+      return;
+    }
     let pixel = [
       Math.floor(event.offsetX / (PIXELSIZE * DIMENSION)),
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
@@ -102,6 +109,7 @@ function init() {
       "</br>" +
       "Players: " +
       usersInRoom[0];
+    tooltip.setAttribute("class", "tooltiptext");
     usersInRoom[1]
       ? selectedBox.setAttribute("class", "selected-box-active")
       : selectedBox.setAttribute("class", "selected-box");
