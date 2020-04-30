@@ -31,7 +31,9 @@ footer {
   height: auto;
   width: 100%;
   color: white;
+  text-align: center;
   border-top: 1px black solid;
+  white-space: nowrap;
 }
 
 body {
@@ -47,6 +49,10 @@ body {
   top: 50%;
   left: 50%;
   text-align: center;
+}
+
+.hidden {
+  display: none;
 }
 
 .preview-canvas-wrapper {
@@ -293,15 +299,34 @@ body {
 }
 
 .promo-message {
-  display: inline-block;
+  float: left;
   background-color: dodgerblue;
   margin: 10px;
   padding: 10px;
   text-align: left;
+  border-radius: 20px;
 }
 
 .function-footer {
-  padding: 10px;
-  vertical-align: top;
   float: right;
+  padding: 10px;
+}
+
+.how-to-wrapper {
+  background-color: dodgerblue;
+  border-radius: 20px;
+  display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.how-to-wrapper h2 {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding: 4px;
+}
+.how-to-wrapper p {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding: 4px;
 }
