@@ -16,6 +16,7 @@ const WIDTH = canvas_element.clientWidth;
 const HEIGHT = canvas_element.clientWidth;
 const PIXELSIZE = WIDTH / DIMENSION;
 
+let clientIdentifier = "";
 let filledPixels = {};
 let previousPixel = [-1, -1];
 let timeout;
@@ -73,8 +74,8 @@ function init() {
         ClearUserList();
       }
       let userIndex = 1;
-      for (let user in data["users"]) {
-        AppendUsersToList(data, user, userIndex);
+      for (let _identifier in data["users"]) {
+        AppendUsersToList(data, _identifier, userIndex);
         userIndex++;
       }
     });
@@ -161,14 +162,14 @@ function init() {
         "&y=" +
         YSITE +
         "&user=" +
-        globalUser,
+        clientIdentifier,
       null
     );
     return;
   });
 
   window.addEventListener("DOMContentLoaded", async function (e) {
-    let res = await asyncXhrRequest(
+    await asyncXhrRequest(
       "GET",
       "endpoints/joining.php?x=" +
         XSITE +
@@ -177,7 +178,9 @@ function init() {
         "&user=" +
         globalUser,
       null
-    );
+    ).then((res) => {
+      clientIdentifier = JSON.parse(res).identifier;
+    });
   });
   window.addEventListener("mouseup", (e) => {
     if (event.srcElement.id != canvas_element.id) return;
@@ -379,13 +382,13 @@ function SetDefaultCheckboxes(choices) {
   }
 }
 
-async function AdjustScore(user, newScore, index) {
+async function AdjustScore(_identifier, newScore, index) {
   if (newScore < 0) {
     return;
   }
   SetInnerHtmlLiScore(
     document.getElementById("userLi" + index),
-    user,
+    _identifier,
     newScore,
     index
   );
@@ -400,7 +403,7 @@ async function AdjustScore(user, newScore, index) {
         "&y=" +
         YSITE +
         "&user=" +
-        user +
+        _identifier +
         "&score=" +
         newScore.toString(),
       null
@@ -415,12 +418,12 @@ function ClearUserList() {
   users_score_list_element.innerHTML = "<li><b>Score: </b> </li> </br>";
 }
 
-function AppendUsersToList(data, user, index) {
+function AppendUsersToList(data, _identifier, index) {
   let offsetTime = new Date(
-    data["users"][user]["timestamp"].toDate().getTime()
+    data["users"][_identifier]["timestamp"].toDate().getTime()
   );
   let li = document.createElement("li");
-  li.appendChild(document.createTextNode(data["users"][user]["user"]));
+  li.appendChild(document.createTextNode(data["users"][_identifier]["user"]));
   users_list_element.appendChild(li);
   let liTime = document.createElement("li");
   liTime.appendChild(
@@ -435,8 +438,8 @@ function AppendUsersToList(data, user, index) {
   liScore.setAttribute("id", "userLi" + index);
   SetInnerHtmlLiScore(
     liScore,
-    data["users"][user]["user"],
-    data["users"][user]["score"],
+    _identifier,
+    data["users"][_identifier]["score"],
     index
   );
   users_score_list_element.appendChild(
@@ -444,11 +447,11 @@ function AppendUsersToList(data, user, index) {
   );
 }
 
-function SetInnerHtmlLiScore(element, user, score, index) {
+function SetInnerHtmlLiScore(element, _identifier, score, index) {
   element.innerHTML =
     '<input type="button" class="button small" value="-" onclick="AdjustScore(' +
     "'" +
-    user +
+    _identifier +
     "'," +
     (score - 1) +
     "," +
@@ -459,7 +462,7 @@ function SetInnerHtmlLiScore(element, user, score, index) {
     "</span>" +
     '<input type="button" class="button small" value="+" onclick="AdjustScore(' +
     "'" +
-    user +
+    _identifier +
     "'," +
     (parseInt(score) + 1) +
     "," +

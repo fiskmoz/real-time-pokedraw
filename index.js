@@ -39,10 +39,11 @@ function init() {
       } else {
         let isRoomActive = true;
         let usersLen = 0;
-        for (let user in userData) {
+        for (let _identifier in userData) {
           if (
             new Date(
-              userData[user]["timestamp"].toDate().getTime() + 180 * 60 * 1000
+              userData[_identifier]["timestamp"].toDate().getTime() +
+                180 * 60 * 1000
             ).getTime() > Date.now()
           ) {
             isRoomActive = false;
@@ -68,7 +69,6 @@ function init() {
   });
 
   document.body.addEventListener("mousemove", function (event) {
-    var viewportOffset = canvas_element.getBoundingClientRect();
     if (event.srcElement.id != canvas_element.id) {
       if (selectedBox == null) return;
       if (tooltip.classList.contains("tooltiptext")) {
@@ -88,6 +88,7 @@ function init() {
       previouslySelectedBox[1] == pixel[1]
     )
       return;
+    let viewportOffset = canvas_element.getBoundingClientRect();
     previouslySelectedBox = pixel;
     if (!selectedBox) {
       selectedBox = document.createElement("div");

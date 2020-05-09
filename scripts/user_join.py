@@ -6,6 +6,7 @@ import datetime
 import os
 import sys
 import json
+import uuid
 
 # this will set the required credentials for firebase into os config for localhost.
 # rename firebase credentials file to firebase_cred.json
@@ -45,6 +46,8 @@ if os.environ.get('project_id') is not None:
 
     user = sys.argv[3].replace("'", '')
 
+    identifier = str(uuid.uuid4()).replace(' ', '').replace('-', '')
+
     room_ref = db.collection(u'app').document(key)
     timeoffset = datetime.timedelta(minutes=60*3)
     users_to_delete = []
@@ -59,7 +62,7 @@ if os.environ.get('project_id') is not None:
                         users_to_delete.append(
                             room_dict[room_key][room_user]['user'])
         data = {}
-        data["users." + user] = {
+        data["users." + identifier] = {
             'user': user,
             'timestamp': datetime.datetime.utcnow(),
             "score": "0"
@@ -71,14 +74,15 @@ if os.environ.get('project_id') is not None:
         room_ref.set({
             "pixels": '{"data":{}}',
             "users": {
-                user: {
+                identifier: {
                     "user": user,
                     "timestamp": datetime.datetime.utcnow(),
-                    "score": "0"
+                    "score": "0",
+
                 }
             }
         })
 
-    print(1)
+    print({"identifier": identifier})
 else:
     print("could not create firebase client")
