@@ -5,8 +5,13 @@ const users_list_element = document.getElementById("users_list");
 const users_timestamp_list_element = document.getElementById(
   "users_timestamp_list"
 );
-const XSITE = canvas_element.getAttribute("name").split(",")[0];
-const YSITE = canvas_element.getAttribute("name").split(",")[1];
+const users_score_list_element = document.getElementById("users_score_list");
+const lobbyIds = document
+  .getElementById("lobby_identifier")
+  .getAttribute("name")
+  .split(",");
+const XSITE = lobbyIds[0];
+const YSITE = lobbyIds[1];
 const WIDTH = canvas_element.clientWidth;
 const HEIGHT = canvas_element.clientWidth;
 const PIXELSIZE = WIDTH / DIMENSION;
@@ -20,11 +25,12 @@ let isDrawing = false;
 let selectedColor = "#42445A";
 let usersInLobby = "";
 let hasLeft = false;
+let updateUserScoreTimeout = null;
 
 context.translate(0.5, 0.5);
 
 function init() {
-  clear();
+  ClearCanvas();
   db.collection("app")
     .doc(XSITE + "," + YSITE)
     .onSnapshot(function (doc) {
@@ -38,39 +44,38 @@ function init() {
       } catch {
         pixelData = null;
       }
+      // Handle pixel data.
       if (pixelData != null) {
         if (Object.keys(pixelData["data"]).length === 0) {
           for (let x = 1; x < DIMENSION - 1; x++) {
             for (let y = 1; y < DIMENSION - 1; y++) {
-              clearPixel([x, y]);
+              ClearPixel([x, y]);
             }
           }
         } else {
           for (let subkey in pixelData["data"]) {
             let subcoordniate = subkey.split(",");
             let color = pixelData["data"][subcoordniate];
-            fillPixel(subcoordniate, color);
+            FillPixel(subcoordniate, color);
           }
         }
       }
+      // Handle user data.
       let newUsers = JSON.stringify(data["users"]);
-      if (usersInLobby == newUsers || newUsers == "{}") return;
+      if (
+        usersInLobby == newUsers ||
+        newUsers == "{}" ||
+        updateUserScoreTimeout != null
+      )
+        return;
       usersInLobby = newUsers;
-      users_list_element.innerHTML = "<li> <b> Names: </b> </li> </br>";
-      users_timestamp_list_element.innerHTML =
-        "<li> <b>Joined: </b> </li> </br>";
+      if (users_list_element.getElementsByTagName("li").length > 1) {
+        ClearUserList();
+      }
+      let userIndex = 1;
       for (let user in data["users"]) {
-        let liu = document.createElement("li");
-        let lit = document.createElement("li");
-        let offsetTime = new Date(
-          data["users"][user]["timestamp"].toDate().getTime()
-        );
-        liu.appendChild(document.createTextNode(data["users"][user]["user"]));
-        lit.appendChild(
-          document.createTextNode(offsetTime.toLocaleTimeString())
-        );
-        users_list_element.appendChild(liu);
-        users_timestamp_list_element.appendChild(lit);
+        AppendUsersToList(data, user, userIndex);
+        userIndex++;
       }
     });
 
@@ -126,8 +131,8 @@ function init() {
   let checkboxJson = JSON.parse(localStorage.getItem("generations"));
   if (!!checkboxJson) SetDefaultCheckboxes(checkboxJson);
 
-  canvas_element.addEventListener("mousemove", fill, false);
-  canvas_element.addEventListener("mousedown", fill, false);
+  canvas_element.addEventListener("mousemove", Fill, false);
+  canvas_element.addEventListener("mousedown", Fill, false);
   pickr.on("change", function () {
     selectedColor = pickr.getColor().toHEXA().toString();
   });
@@ -138,7 +143,7 @@ function init() {
   };
 
   window.clear_canvas = function () {
-    this.clear();
+    this.ClearCanvas();
     save();
   };
 
@@ -185,11 +190,11 @@ function init() {
   window.addEventListener("mousedown", (e) => {
     if (event.srcElement.id != canvas_element.id) return;
     isDrawing = true;
-    fill(e);
+    Fill(e);
   });
 }
 
-function fill(event) {
+function Fill(event) {
   if (isWatching) return;
   if (event.srcElement.id != canvas_element.id || !isDrawing) return;
   let pixel = [
@@ -197,11 +202,11 @@ function fill(event) {
     Math.floor(event.offsetY / PIXELSIZE),
   ];
   if (pixel[0] == previousPixel[0] && pixel[1] == previousPixel[1]) return;
-  event.ctrlKey ? clearPixel(pixel) : fillPixel(pixel, selectedColor);
+  event.ctrlKey ? ClearPixel(pixel) : FillPixel(pixel, selectedColor);
   previousPixel = pixel;
 }
 
-function fillPixel(pixel, color) {
+function FillPixel(pixel, color) {
   filledPixels[pixel[0] + "," + pixel[1]] = color;
   context.fillStyle = color;
   context.fillRect(
@@ -212,7 +217,7 @@ function fillPixel(pixel, color) {
   );
 }
 
-function clearPixel(pixel) {
+function ClearPixel(pixel) {
   filledPixels[pixel[0] + "," + pixel[1]] = DEFAULTWHITE;
   let cpx = Math.floor(pixel[0] * PIXELSIZE) + 0.5;
   let cpy = Math.floor(pixel[1] * PIXELSIZE) + 0.5;
@@ -223,7 +228,7 @@ function clearPixel(pixel) {
   }
 }
 
-function clear() {
+function ClearCanvas() {
   filledPixels = {};
   context.clearRect(0, 0, canvas_element.width, canvas_element.height);
   context.strokeStyle = "rgba(0,0,0,0.1)";
@@ -372,6 +377,94 @@ function SetDefaultCheckboxes(choices) {
     let checkbox = document.getElementById("gen" + gen.toString());
     !!choices[gen] ? (checkbox.checked = true) : (checkbox.checked = false);
   }
+}
+
+async function AdjustScore(user, newScore, index) {
+  if (newScore < 0) {
+    return;
+  }
+  SetInnerHtmlLiScore(
+    document.getElementById("userLi" + index),
+    user,
+    newScore,
+    index
+  );
+  if (updateUserScoreTimeout != null) {
+    clearTimeout(updateUserScoreTimeout);
+  }
+  updateUserScoreTimeout = setTimeout(() => {
+    let res = asyncXhrRequest(
+      "GET",
+      "endpoints/adjust_score.php?x=" +
+        XSITE +
+        "&y=" +
+        YSITE +
+        "&user=" +
+        user +
+        "&score=" +
+        newScore.toString(),
+      null
+    );
+    updateUserScoreTimeout = null;
+  }, 1500);
+}
+
+function ClearUserList() {
+  users_list_element.innerHTML = "<li><b>Names: </b> </li> </br>";
+  users_timestamp_list_element.innerHTML = "<li><b>Joined: </b> </li> </br>";
+  users_score_list_element.innerHTML = "<li><b>Score: </b> </li> </br>";
+}
+
+function AppendUsersToList(data, user, index) {
+  let offsetTime = new Date(
+    data["users"][user]["timestamp"].toDate().getTime()
+  );
+  let li = document.createElement("li");
+  li.appendChild(document.createTextNode(data["users"][user]["user"]));
+  users_list_element.appendChild(li);
+  let liTime = document.createElement("li");
+  liTime.appendChild(
+    document.createTextNode(
+      offsetTime
+        .toLocaleTimeString()
+        .substr(0, offsetTime.toLocaleTimeString().length - 3)
+    )
+  );
+  users_timestamp_list_element.appendChild(liTime);
+  let liScore = document.createElement("li");
+  liScore.setAttribute("id", "userLi" + index);
+  SetInnerHtmlLiScore(
+    liScore,
+    data["users"][user]["user"],
+    data["users"][user]["score"],
+    index
+  );
+  users_score_list_element.appendChild(
+    document.createElement("li").appendChild(liScore)
+  );
+}
+
+function SetInnerHtmlLiScore(element, user, score, index) {
+  element.innerHTML =
+    '<input type="button" class="button small" value="-" onclick="AdjustScore(' +
+    "'" +
+    user +
+    "'," +
+    (score - 1) +
+    "," +
+    index +
+    ')">' +
+    '<span class="score-span">' +
+    score +
+    "</span>" +
+    '<input type="button" class="button small" value="+" onclick="AdjustScore(' +
+    "'" +
+    user +
+    "'," +
+    (parseInt(score) + 1) +
+    "," +
+    index +
+    ')">';
 }
 
 init();

@@ -108,15 +108,15 @@ body {
   display: inline-block;
   padding-left: 10px;
   max-width: 400px;
-  min-width: 300px;
+  min-width: 350px;
   vertical-align: top;
 }
 
 .generation-selection-wrapper {
   display: inline-block;
   padding-left: 10px;
-  max-width: 600px;
-  min-width: 550px;
+  max-width: 650px;
+  min-width: 500px;
   vertical-align: top;
 }
 
@@ -236,6 +236,10 @@ body {
   font-size: 16px;
   box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
 }
+.button.small {
+  padding: 0px 5px;
+  font-size: 13px;
+}
 
 .button:hover {
   box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
@@ -329,4 +333,9 @@ body {
   margin-top: 4px;
   margin-bottom: 4px;
   padding: 4px;
+}
+
+.score-span {
+  padding-left: 2px;
+  padding-right: 2px;
 }

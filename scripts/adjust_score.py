@@ -2,7 +2,6 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-import datetime
 import os
 import sys
 import json
@@ -45,40 +44,13 @@ if os.environ.get('project_id') is not None:
 
     user = sys.argv[3].replace("'", '')
 
-    room_ref = db.collection(u'app').document(key)
-    timeoffset = datetime.timedelta(minutes=60*3)
-    users_to_delete = []
-    room_dict = room_ref.get().to_dict()
-    if bool(room_dict):
-        for room_key in room_dict:
-            if room_key == "users":
-                for room_user in room_dict[room_key]:
-                    if room_user == user:
-                        continue
-                    if room_dict[room_key][room_user]['timestamp'].replace(tzinfo=None) < (datetime.datetime.utcnow().replace(tzinfo=None) - timeoffset):
-                        users_to_delete.append(
-                            room_dict[room_key][room_user]['user'])
-        data = {}
-        data["users." + user] = {
-            'user': user,
-            'timestamp': datetime.datetime.utcnow(),
-            "score": "0"
-        }
-        for user_to_delete in users_to_delete:
-            data["users." + user_to_delete] = firestore.DELETE_FIELD  # pylint: disable=no-member
-        room_ref.update(data)
-    else:
-        room_ref.set({
-            "pixels": '{"data":{}}',
-            "users": {
-                user: {
-                    "user": user,
-                    "timestamp": datetime.datetime.utcnow(),
-                    "score": "0"
-                }
-            }
-        })
+    score = sys.argv[4]
 
+    db.collection(u'app').document(key).update(
+        {
+            'users.' + user + ".score": score
+        }
+    )
     print(1)
 else:
     print("could not create firebase client")
