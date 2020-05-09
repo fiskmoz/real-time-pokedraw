@@ -1,0 +1,26 @@
+<div class="draw-canvas-wrapper">
+  <div class="painter-header">
+    <div id="picker"></div>
+    <input
+      type="button"
+      class="button"
+      value="Clear Canvas"
+      onclick="clear_canvas()"
+    />
+    <input
+      type="button"
+      class="button"
+      value="Stop Drawing"
+      onclick="stop_drawing()"
+    />
+    <div class="drawing-status">
+      <div id="timer"></div>
+    </div>
+  </div>
+  <canvas
+    id="draw_canvas"
+    class="draw-canvas watching"
+    width="600"
+    height="600"
+  ></canvas>
+</div>
