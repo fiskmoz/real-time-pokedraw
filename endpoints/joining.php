@@ -22,9 +22,6 @@ if (!isset($user))
     echo "Y not set";
     return;
 }
-
+header('Content-Type: application/json');
 $result = shell_exec("python ../scripts/user_join.py $x  $y '$user' 2>&1 &");
-    if($result != 1 ){
-        print_r($result);
-        die();
-    }
+echo str_replace("'", '"',$result);
