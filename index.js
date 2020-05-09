@@ -75,6 +75,7 @@ function init() {
         selectedBox.setAttribute("class", "hidden");
         tooltip.setAttribute("class", "hidden");
       }
+      previouslySelectedBox = [];
       return;
     }
     let pixel = [
