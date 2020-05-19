@@ -4,10 +4,14 @@ const context = canvas_element.getContext("2d");
 const users_list_element = document.getElementById("users_list");
 const how_to_button = document.getElementById("how_to_button");
 const how_to_div = document.getElementById("how_to_div");
+const user_already_drawing_element = document.getElementById(
+  "user_already_drawing"
+);
 const users_timestamp_list_element = document.getElementById(
   "users_timestamp_list"
 );
 const users_score_list_element = document.getElementById("users_score_list");
+const users_status_list_element = document.getElementById("users_status_list");
 const lobbyIds = document
   .getElementById("lobby_identifier")
   .getAttribute("name")
@@ -151,11 +155,36 @@ function init() {
     save();
   };
 
-  window.start_countdown = function () {
-    if (!howToHidden) ToggleHowToPlay();
-    timer = TIMERDEFAULT;
-    timer_element.innerHTML = timer.toString();
-    this.GetRandomPokemon();
+  window.start_countdown = async function () {
+    await asyncXhrRequest(
+      "GET",
+      "endpoints/adjust_drawing_status.php?x=" +
+        XSITE +
+        "&y=" +
+        YSITE +
+        "&user=" +
+        clientIdentifier +
+        "&isDrawing=true",
+      null
+    ).then((text) => {
+      console.log(text);
+      if (text.trim() == "3") {
+        user_already_drawing_element.setAttribute(
+          "class",
+          "user-already-drawing"
+        );
+        return;
+      }
+      if (!howToHidden) ToggleHowToPlay();
+      user_already_drawing_element.setAttribute(
+        "class",
+        "user-already-drawing hidden"
+      );
+      ChangeDrawStatus();
+      timer = TIMERDEFAULT;
+      timer_element.innerHTML = timer.toString();
+      this.GetRandomPokemon();
+    });
   };
 
   window.addEventListener("beforeunload", async function (e) {
@@ -290,6 +319,17 @@ async function GetRandomPokemon() {
 }
 
 function StopDrawing() {
+  asyncXhrRequest(
+    "GET",
+    "endpoints/adjust_drawing_status.php?x=" +
+      XSITE +
+      "&y=" +
+      YSITE +
+      "&user=" +
+      clientIdentifier +
+      "&isDrawing=false",
+    null
+  );
   canvas_element.setAttribute("class", "draw-canvas watching");
   isWatching = true;
   isDrawing = false;
@@ -420,6 +460,7 @@ function ClearUserList() {
   users_list_element.innerHTML = "<li><b>Names: </b> </li> </br>";
   users_timestamp_list_element.innerHTML = "<li><b>Joined: </b> </li> </br>";
   users_score_list_element.innerHTML = "<li><b>Score: </b> </li> </br>";
+  users_status_list_element.innerHTML = "<li><b>Status: </b> </li> </br>";
 }
 
 function AppendUsersToList(data, _identifier, index) {
@@ -449,6 +490,16 @@ function AppendUsersToList(data, _identifier, index) {
   users_score_list_element.appendChild(
     document.createElement("li").appendChild(liScore)
   );
+
+  let liStatus = document.createElement("li");
+  liStatus.appendChild(
+    document.createTextNode(
+      data["users"][_identifier]["isDrawing"] ? "Drawing" : "Watching"
+    )
+  );
+  users_status_list_element.appendChild(
+    document.createElement("li").appendChild(liStatus)
+  );
 }
 
 function SetInnerHtmlLiScore(element, _identifier, score, index) {
@@ -477,6 +528,20 @@ function SetInnerHtmlLiScore(element, _identifier, score, index) {
 how_to_button.onclick = function () {
   ToggleHowToPlay();
 };
+
+function ChangeDrawStatus() {
+  let userIndex = 0;
+  let users = JSON.parse(usersInLobby);
+  for (user in users) {
+    if (user == clientIdentifier) {
+      break;
+    }
+    userIndex++;
+  }
+  let statuses = users_status_list_element.getElementsByTagName("li");
+  console.log(statuses);
+  statuses[userIndex + 1].innerHTML = "Drawing";
+}
 
 function ToggleHowToPlay() {
   if (howToHidden) {

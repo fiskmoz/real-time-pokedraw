@@ -2,11 +2,9 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-import datetime
 import os
 import sys
 import json
-import uuid
 
 # this will set the required credentials for firebase into os config for localhost.
 # rename firebase credentials file to firebase_cred.json
@@ -46,44 +44,29 @@ if os.environ.get('project_id') is not None:
 
     user = sys.argv[3].replace("'", '')
 
-    identifier = str(uuid.uuid4()).replace(' ', '').replace('-', '')
+    isDrawing = sys.argv[4]
 
     room_ref = db.collection(u'app').document(key)
-    timeoffset = datetime.timedelta(minutes=60*3)
-    users_to_delete = []
-    room_dict = room_ref.get().to_dict()
-    if bool(room_dict):
-        for room_key in room_dict:
-            if room_key == "users":
-                for room_user in room_dict[room_key]:
-                    if room_user == user:
-                        continue
-                    if room_dict[room_key][room_user]['timestamp'].replace(tzinfo=None) < (datetime.datetime.utcnow().replace(tzinfo=None) - timeoffset):
-                        users_to_delete.append(
-                            room_dict[room_key][room_user]['user'])
-        data = {}
-        data["users." + identifier] = {
-            'user': user,
-            'timestamp': datetime.datetime.utcnow(),
-            "score": "0",
-            "isDrawing": False
-        }
-        for user_to_delete in users_to_delete:
-            data["users." + user_to_delete] = firestore.DELETE_FIELD  # pylint: disable=no-member
-        room_ref.update(data)
-    else:
-        room_ref.set({
-            "pixels": '{"data":{}}',
-            "users": {
-                identifier: {
-                    "user": user,
-                    "timestamp": datetime.datetime.utcnow(),
-                    "score": "0",
-                    "isDrawing": False
-                }
-            }
-        })
 
-    print({"identifier": identifier})
+    room_dict = room_ref.get().to_dict()
+
+    failed = False
+    shouldDraw = False
+    if (isDrawing == "true"):
+        shouldDraw = True
+
+    if bool(room_dict) and shouldDraw == True:
+        for _user in room_dict['users']:
+            if (room_dict['users'][_user]['isDrawing'] == True):
+                print("3")
+                failed = True
+
+    if not failed:
+        room_ref.update(
+            {
+                'users.' + user + ".isDrawing": shouldDraw
+            }
+        )
+        print(1)
 else:
     print("could not create firebase client")
