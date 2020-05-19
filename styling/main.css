@@ -318,10 +318,10 @@ body {
 
 .how-to-wrapper {
   background-color: dodgerblue;
-  border-radius: 20px;
-  display: inline-block;
+  color: white;
   margin-top: 10px;
   margin-bottom: 10px;
+  text-align: left;
 }
 
 .how-to-wrapper h2 {

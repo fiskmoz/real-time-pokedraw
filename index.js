@@ -26,12 +26,12 @@ function init() {
       let userData;
       try {
         pixelData = JSON.parse(data["pixels"]);
-      } catch {
+      } catch(error) {
         continue;
       }
       try {
         userData = data["users"];
-      } catch {
+      } catch(error) {
         userData = {};
       }
       if (JSON.stringify(userData) == "{}") {
