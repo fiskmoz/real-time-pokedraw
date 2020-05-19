@@ -107,7 +107,7 @@ body {
 .players-in-lobby-wrapper {
   display: inline-block;
   padding-left: 10px;
-  max-width: 400px;
+  max-width: 460px;
   min-width: 350px;
   vertical-align: top;
 }
@@ -217,6 +217,7 @@ body {
   border: black 2px solid;
   margin-bottom: 15px;
   display: flex;
+  padding-right: 20px;
 }
 
 .pickr {
@@ -338,4 +339,10 @@ body {
 .score-span {
   padding-left: 2px;
   padding-right: 2px;
+}
+
+.user-already-drawing {
+  background-color: dodgerblue;
+  color: white;
+  text-align: center;
 }
