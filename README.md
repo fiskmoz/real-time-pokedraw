@@ -11,6 +11,7 @@ Refactoring js files
 Webpack  
 Mobile support  
 Multiple bowsers (Check IE, edge, safari etc)
+Display error messages on failed calls
 
 ### The Stack:
 

@@ -2,6 +2,8 @@ const canvas_element = document.getElementById("draw_canvas");
 const timer_element = document.getElementById("timer");
 const context = canvas_element.getContext("2d");
 const users_list_element = document.getElementById("users_list");
+const how_to_button = document.getElementById("how_to_button");
+const how_to_div = document.getElementById("how_to_div");
 const users_timestamp_list_element = document.getElementById(
   "users_timestamp_list"
 );
@@ -27,6 +29,7 @@ let selectedColor = "#42445A";
 let usersInLobby = "";
 let hasLeft = false;
 let updateUserScoreTimeout = null;
+let howToHidden = false;
 
 context.translate(0.5, 0.5);
 
@@ -42,7 +45,7 @@ function init() {
       let pixelData;
       try {
         pixelData = JSON.parse(data["pixels"]);
-      } catch {
+      } catch (error) {
         pixelData = null;
       }
       // Handle pixel data.
@@ -149,6 +152,7 @@ function init() {
   };
 
   window.start_countdown = function () {
+    if (!howToHidden) ToggleHowToPlay();
     timer = TIMERDEFAULT;
     timer_element.innerHTML = timer.toString();
     this.GetRandomPokemon();
@@ -468,6 +472,21 @@ function SetInnerHtmlLiScore(element, _identifier, score, index) {
     "," +
     index +
     ')">';
+}
+
+how_to_button.onclick = function () {
+  ToggleHowToPlay();
+};
+
+function ToggleHowToPlay() {
+  if (howToHidden) {
+    how_to_div.setAttribute("class", "");
+    how_to_button.value = "Hide Tutorial";
+  } else {
+    how_to_div.setAttribute("class", "hidden");
+    how_to_button.value = "Show Tutorial";
+  }
+  howToHidden = !howToHidden;
 }
 
 init();

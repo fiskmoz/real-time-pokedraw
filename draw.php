@@ -20,29 +20,41 @@ $players_in_lobby = file_get_contents('components/draw/players_in_lobby.html');
 $draw_canvas = file_get_contents('components/draw/draw_canvas.html');
 $ad_sense = getenv('ad_sense');
 
-print <<<EOF
+$res = '
 <!doctype html>
 <html>
-    <style>
-        $css
-    </style>
+
     <head> 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- 'classic' theme -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"/> <!-- \'classic\' theme -->
         <script src="pickr/dist/pickr.min.js"></script>
-        $header
+        '.$header.'
+        <style>
+            '.$css.'
+        </style>
     </head>
     <body>
-        $modal
-        <div class="drawing-wrapper">
-            $draw_canvas
-            $generation_selection
-            $players_in_lobby
+        <div class="header">
+            <a id="title" href="/">
+                <img
+                src="https://fontmeme.com/permalink/200422/a58eeebd41d1d7c606dc4e1881cc5acf.png"
+                alt="pokemon-font"
+                border="0"
+                />
+            </a>
         </div>
-        <div id="lobby_identifier" name="$x,$y"></div>
+        '.$modal.'
+        <div class="drawing-wrapper">
+            '.$draw_canvas.'
+            '.$generation_selection.'
+            '.$players_in_lobby.'
+        </div>
+        <div id="lobby_identifier" name="'.$x.','.$y.'"></div>
     </body>
     <footer>
-        $footer
+        '.$footer.'
         <script src="draw.js"></script>
     </footer>
-</html>
-EOF;
+</html>';
+
+
+print_r(trim(preg_replace('/\t+/', '', $res)));
