@@ -42,36 +42,18 @@ if os.environ.get('project_id') is not None:
 
     db = firestore.client()
 
-    key = sys.argv[1] + ',' + sys.argv[2]
-
-    user = sys.argv[3].replace("'", '')
-
-    identifier = str(uuid.uuid4()).replace(' ', '').replace('-', '')
-
-    room_ref = db.collection(u'app').document(key)
-    room_dict = room_ref.get().to_dict()
-    if bool(room_dict):
-        data = {}
-        data["users." + identifier] = {
-            'user': user,
-            'timestamp': datetime.datetime.utcnow(),
-            "score": "0",
-            "isDrawing": False
-        }
-        room_ref.update(data)
-    else:
-        room_ref.set({
-            "pixels": '{"data":{}}',
-            "users": {
-                identifier: {
-                    "user": user,
-                    "timestamp": datetime.datetime.utcnow(),
-                    "score": "0",
-                    "isDrawing": False
-                }
-            }
-        })
-
-    print({"identifier": identifier})
-else:
-    print("could not create firebase client")
+    room_data_raw = db.collection(u'app').stream()
+    timeoffset = datetime.timedelta(minutes=60)
+    room_data_dict = {element.id: element.to_dict()
+                      for element in room_data_raw}
+    #print(json.dumps(room_data_dict, indent=4, sort_keys=True, default=str))
+    for room in room_data_dict:
+        for user in room_data_dict[room]["users"]:
+            if room_data_dict[room]["users"][user]["timestamp"].replace(tzinfo=None) < (datetime.datetime.now().replace(tzinfo=None) - timeoffset):
+                print("removing user: " + user + " from room: " + room +
+                      " at: " + str(datetime.datetime.now().replace(tzinfo=None)))
+                db.collection(u'app').document(room).update(
+                    {
+                        'users.' + user: firestore.DELETE_FIELD  # pylint: disable=no-member
+                    }
+                )

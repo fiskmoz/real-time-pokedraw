@@ -22,6 +22,11 @@ PHP + Vanilla JS + Python scripts + Firebase
 If mac or linux start apache with index.php at root.  
 For windows install XAMPP, configure root to `index.php` and run.
 
+### Scheduled cleanup:
+
+For webbrowsers such as firefox, it is not possible hijack the exit page event so sometimes users will be stuck in lobbys.
+Use `_scheduled_remove_inactive_users.py` in a scheudled manner to remove inactive users.
+
 ### Setting up firebase:
 
 For localhost download your credentials json from firebase, place in root folder and rename to `firebase_cred.json`.  
