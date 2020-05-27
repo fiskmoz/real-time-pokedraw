@@ -9,4 +9,4 @@ google-cloud-storage==1.27.0
 google-resumable-media==0.5.0
 googleapis-common-protos==1.51.0
 Flask==1.1.1
-gunicorn=19.9.0
+gunicorn==19.9.0
