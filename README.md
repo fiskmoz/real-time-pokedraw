@@ -10,19 +10,19 @@ https (Heroku personal)
 Refactoring js files  
 Webpack  
 Mobile support  
-Multiple bowsers (Check IE, edge, safari etc)
+Multiple bowsers (Check IE, edge, safari etc)   
 Display error messages on failed calls
 
 ### The Stack:
 
 Flask + Vanilla JS + Firebase
 
-### Getting started:
+### Getting started localhost:
 
 Install python 3  
-`pip install flask`
+`pip install flask`   
 Navigate to project root  
-`python app.py`
+`python app.py`   
 
 ### Scheduled cleanup:
 
@@ -36,5 +36,4 @@ In production, make sure credentials are placed inside os enviroment variables f
 
 ### Credits
 
-Color picker is from https://github.com/Simonwep/pickr
-Credits goes to all authors.
+Color picker is from https://github.com/Simonwep/pickr credit goes to all authors.
