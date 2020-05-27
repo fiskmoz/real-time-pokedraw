@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/main.css') }}">
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
+    
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="{{ url_for('static', filename='favicon/favicon-32x32.png') }}"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="{{ url_for('static', filename='favicon/favicon-16x16.png') }}"
+    />
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='favicon.webmanifest') }}">
+    <link rel="mask-icon" href="{{ url_for('static', filename='/favicon/safari-pinned-tab.svg') }}" color="#5bbad5" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+    
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyAWiqFCByM9LxsLDqq71YgVCpmXhqJTyNI",
+        authDomain: "real-time-pokedraw.firebaseapp.com",
+        databaseURL: "https://real-time-pokedraw.firebaseio.com",
+        projectId: "real-time-pokedraw",
+        storageBucket: "real-time-pokedraw.appspot.com",
+        messagingSenderId: "710326983039",
+        appId: "1:710326983039:web:5a8aa14aa69555db2c624a",
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      let db = firebase.firestore();
+    </script>
+    {% block header_imports %}
+    {% endblock%}
+  </head>
+  <body>
+    <div class="header">
+      <a id="title" href="/">
+        <img
+          src="https://fontmeme.com/permalink/200422/a58eeebd41d1d7c606dc4e1881cc5acf.png"
+          alt="pokemon-font"
+          border="0"
+        />
+      </a>
+    </div>
+    <div id="user_modal" class="modal">
+        <div class="modal-content centered">
+          <h2>Hi there! Please select a nickname!</h2>
+          <p id="modal_error_msg"></p>
+          <label for"modal_text_input">Nickname: </label>
+          <input type="text" id="modal_text_input" class="text-input">
+          <span id="modal_close_btn" class="button">Save</span>
+        </div>
+      </div>
+    {% block content %}
+    {% endblock %}
+  </body>
+  <footer>
+    <div class="footer">
+        <div class="promo-message">
+          Hi there!
+          <br />
+          Help me fund better servers and more database power
+          <br />
+          for a more responsive real-time!
+          <a href="https://paypal.me/pools/c/8oGaCNgaQO" target="_blank"
+            >Click Here!
+          </a>
+        </div>
+      
+        <div class="function-footer">
+          <input type="button" id="rename_button" class="button" value="Rename" />
+          <br />
+          <br />
+          <a href="https://github.com/fiskmoz/real-time-pokedraw">Source Code</a>
+        </div>
+      </div>
+      <script type= "text/javascript" src="{{ url_for('static',filename='js/globals.js') }}"></script>
+      {% block footer_imports %}
+      {% endblock%}
+  </footer>
+</html>
