@@ -158,7 +158,6 @@ def player_leave():
 def drawing_submitted():
     key = request.args.get('x') + ',' + request.args.get('y')
     data = request.data.decode("utf-8")
-    print(data)
     # TODO Validate pixel data sent thru
     if key == ",":
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')

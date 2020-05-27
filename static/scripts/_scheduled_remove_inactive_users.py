@@ -46,7 +46,6 @@ if os.environ.get('project_id') is not None:
     timeoffset = datetime.timedelta(minutes=60)
     room_data_dict = {element.id: element.to_dict()
                       for element in room_data_raw}
-    #print(json.dumps(room_data_dict, indent=4, sort_keys=True, default=str))
     for room in room_data_dict:
         for user in room_data_dict[room]["users"]:
             if room_data_dict[room]["users"][user]["timestamp"].replace(tzinfo=None) < (datetime.datetime.now().replace(tzinfo=None) - timeoffset):
