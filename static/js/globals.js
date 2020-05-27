@@ -54,18 +54,24 @@ function asyncXhrRequest(method, url, data) {
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
-        resolve(xhr.response);
+        resolve({
+          response: xhr.response,
+          status: this.status,
+          statusText: this.statusText,
+        });
       } else {
         reject({
+          response: xhr.response,
           status: this.status,
-          statusText: xhr.statusText,
+          statusText: this.statusText,
         });
       }
     };
     xhr.onerror = function () {
       reject({
+        response: xhr.response,
         status: this.status,
-        statusText: xhr.statusText,
+        statusText: this.statusText,
       });
     };
     if (data) {

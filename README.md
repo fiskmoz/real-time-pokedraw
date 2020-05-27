@@ -15,12 +15,14 @@ Display error messages on failed calls
 
 ### The Stack:
 
-PHP + Vanilla JS + Python scripts + Firebase
+Flask + Vanilla JS + Firebase
 
 ### Getting started:
 
-If mac or linux start apache with index.php at root.  
-For windows install XAMPP, configure root to `index.php` and run.
+Install python 3  
+`pip install flask`
+Navigate to project root  
+`python app.py`
 
 ### Scheduled cleanup:
 
@@ -31,3 +33,8 @@ Use `_scheduled_remove_inactive_users.py` in a scheudled manner to remove inacti
 
 For localhost download your credentials json from firebase, place in root folder and rename to `firebase_cred.json`.  
 In production, make sure credentials are placed inside os enviroment variables for whatever OS running.
+
+### Credits
+
+Color picker is from https://github.com/Simonwep/pickr
+Credits goes to all authors.

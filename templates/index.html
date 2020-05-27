@@ -1,0 +1,11 @@
+{% extends "base.html" %} {% block header_imports %} {% endblock %} {% block
+content %}
+<div id="canvas_wrapper" class="preview-canvas-wrapper">
+  <canvas id="preview_canvas" class="preview-canvas"></canvas>
+</div>
+{% endblock%} {% block footer_imports %}
+<script
+  type="text/javascript"
+  src="{{ url_for('static',filename='js/index.js') }}"
+></script>
+{% endblock %}
