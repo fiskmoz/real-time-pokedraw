@@ -12,12 +12,8 @@ const users_timestamp_list_element = document.getElementById(
 );
 const users_score_list_element = document.getElementById("users_score_list");
 const users_status_list_element = document.getElementById("users_status_list");
-const lobbyIds = document
-  .getElementById("lobby_identifier")
-  .getAttribute("name")
-  .split(",");
-const XSITE = lobbyIds[0];
-const YSITE = lobbyIds[1];
+const XSITE = get("x");
+const YSITE = get("y");
 const WIDTH = canvas_element.clientWidth;
 const HEIGHT = canvas_element.clientWidth;
 const PIXELSIZE = WIDTH / DIMENSION;
@@ -34,6 +30,7 @@ let usersInLobby = "";
 let hasLeft = false;
 let updateUserScoreTimeout = null;
 let howToHidden = false;
+let colorJustSelected = false;
 
 context.translate(0.5, 0.5);
 
@@ -143,6 +140,10 @@ function init() {
   canvas_element.addEventListener("mousedown", Fill, false);
   pickr.on("change", function () {
     selectedColor = pickr.getColor().toHEXA().toString();
+    colorJustSelected = true;
+    setTimeout(() => {
+      colorJustSelected = false;
+    }, 250);
   });
 
   window.stop_drawing = function () {
@@ -158,7 +159,7 @@ function init() {
   window.start_countdown = async function () {
     await asyncXhrRequest(
       "GET",
-      "endpoints/adjust_drawing_status.php?x=" +
+      "endpoints/adjust_status?x=" +
         XSITE +
         "&y=" +
         YSITE +
@@ -166,31 +167,32 @@ function init() {
         clientIdentifier +
         "&isDrawing=true",
       null
-    ).then((text) => {
-      console.log(text);
-      if (text.trim() == "3") {
+    )
+      .then((response) => {
+        if (!howToHidden) ToggleHowToPlay();
         user_already_drawing_element.setAttribute(
           "class",
-          "user-already-drawing"
+          "user-already-drawing hidden"
         );
-        return;
-      }
-      if (!howToHidden) ToggleHowToPlay();
-      user_already_drawing_element.setAttribute(
-        "class",
-        "user-already-drawing hidden"
-      );
-      ChangeDrawStatus();
-      timer = TIMERDEFAULT;
-      timer_element.innerHTML = timer.toString();
-      this.GetRandomPokemon();
-    });
+        ChangeDrawStatus();
+        timer = TIMERDEFAULT;
+        timer_element.innerHTML = timer.toString();
+        this.GetRandomPokemon();
+      })
+      .catch((response) => {
+        if (response.status == "409") {
+          user_already_drawing_element.setAttribute(
+            "class",
+            "user-already-drawing"
+          );
+        }
+      });
   };
 
   window.addEventListener("beforeunload", async function (e) {
-    let res = await asyncXhrRequest(
+    await asyncXhrRequest(
       "GET",
-      "endpoints/leaving.php?x=" +
+      "endpoints/leaving?x=" +
         XSITE +
         "&y=" +
         YSITE +
@@ -204,19 +206,19 @@ function init() {
   window.addEventListener("DOMContentLoaded", async function (e) {
     await asyncXhrRequest(
       "GET",
-      "endpoints/joining.php?x=" +
-        XSITE +
-        "&y=" +
-        YSITE +
-        "&user=" +
-        globalUser,
+      "endpoints/joining?x=" + XSITE + "&y=" + YSITE + "&user=" + globalUser,
       null
     ).then((res) => {
-      clientIdentifier = JSON.parse(res).identifier;
+      clientIdentifier = JSON.parse(res.response).id;
     });
   });
   window.addEventListener("mouseup", (e) => {
-    if (event.srcElement.id != canvas_element.id) return;
+    if (
+      event.srcElement.id != canvas_element.id ||
+      colorJustSelected == true ||
+      isWatching == true
+    )
+      return;
     isDrawing = false;
     save();
     previousPixel = [-1, -1];
@@ -289,10 +291,10 @@ async function GetRandomPokemon() {
   let pokemon_index_str = pokemon_index.toString();
   let pokemon_name_dto = await asyncXhrRequest(
     "GET",
-    "pokedex/pokedex.php?id=" + pokemon_index_str,
+    "endpoints/pokedex?id=" + pokemon_index_str,
     null
   );
-  pokemon_name_dto = JSON.parse(pokemon_name_dto);
+  pokemon_name_dto = JSON.parse(pokemon_name_dto.response);
   if (pokemon_index < 100) pokemon_index_str = "0" + pokemon_index_str;
   if (pokemon_index < 10) pokemon_index_str = "0" + pokemon_index_str;
   document.getElementById("pokemon_image").src =
@@ -321,7 +323,7 @@ async function GetRandomPokemon() {
 function StopDrawing() {
   asyncXhrRequest(
     "GET",
-    "endpoints/adjust_drawing_status.php?x=" +
+    "endpoints/adjust_status?x=" +
       XSITE +
       "&y=" +
       YSITE +
@@ -413,7 +415,7 @@ function GetPokedexIdMultipleGenerations() {
 async function save() {
   let response = await this.asyncXhrRequest(
     "POST",
-    "endpoints/submit_drawing.php?x=" + XSITE + "&y=" + YSITE,
+    "endpoints/submit_drawing?x=" + XSITE + "&y=" + YSITE,
     { data: filledPixels }
   );
   // Handle reponses and errors.
@@ -442,7 +444,7 @@ async function AdjustScore(_identifier, newScore, index) {
   updateUserScoreTimeout = setTimeout(() => {
     let res = asyncXhrRequest(
       "GET",
-      "endpoints/adjust_score.php?x=" +
+      "endpoints/adjust_score?x=" +
         XSITE +
         "&y=" +
         YSITE +
@@ -539,7 +541,6 @@ function ChangeDrawStatus() {
     userIndex++;
   }
   let statuses = users_status_list_element.getElementsByTagName("li");
-  console.log(statuses);
   statuses[userIndex + 1].innerHTML = "Drawing";
 }
 
@@ -552,6 +553,15 @@ function ToggleHowToPlay() {
     how_to_button.value = "Show Tutorial";
   }
   howToHidden = !howToHidden;
+}
+
+function get(name) {
+  if (
+    (name = new RegExp("[?&]" + encodeURIComponent(name) + "=([^&]*)").exec(
+      location.search
+    ))
+  )
+    return decodeURIComponent(name[1]);
 }
 
 init();

@@ -1,0 +1,151 @@
+{% extends "base.html" %} {% block header_imports %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"
+/>
+<!-- \'classic\' theme -->
+<script src="{{ url_for('static',filename='js/pickr.min.js') }}"></script>
+{% endblock %} {% block content %}
+<div class="drawing-wrapper">
+  <div class="draw-canvas-wrapper">
+    <div class="painter-header">
+      <div id="picker"></div>
+      <input
+        type="button"
+        class="button"
+        value="Clear Canvas"
+        onclick="clear_canvas()"
+      />
+      <input
+        type="button"
+        class="button"
+        value="Stop Drawing"
+        onclick="stop_drawing()"
+      />
+      <div class="drawing-status">
+        <div id="timer"></div>
+      </div>
+    </div>
+    <canvas
+      id="draw_canvas"
+      class="draw-canvas watching"
+      width="600"
+      height="600"
+    ></canvas>
+  </div>
+  <div class="generation-selection-wrapper">
+    <div class="centered">
+      <div class="info-header">
+        Generations
+        <br />
+        <label class="checkbox-container" for="gen1">
+          1
+          <input type="checkbox" name="gen1" id="gen1" value="1" checked />
+          <span class="checkmark"></span>
+        </label>
+        <label class="checkbox-container" for="gen2">
+          2
+          <input type="checkbox" name="gen2" id="gen2" value="2" checked />
+          <span class="checkmark"></span>
+        </label>
+        <label class="checkbox-container" for="gen3">
+          3
+          <input type="checkbox" name="gen3" id="gen3" value="3" checked />
+          <span class="checkmark"></span>
+        </label>
+        <label class="checkbox-container" for="gen4">
+          4
+          <input type="checkbox" name="gen4" id="gen4" value="4" checked />
+          <span class="checkmark"></span>
+        </label>
+        <label class="checkbox-container" for="gen5">
+          5
+          <input type="checkbox" name="gen5" id="gen5" value="5" checked />
+          <span class="checkmark"></span>
+        </label>
+        <label class="checkbox-container" for="gen6">
+          6
+          <input type="checkbox" name="gen6" id="gen6" value="6" checked />
+          <span class="checkmark"></span>
+        </label>
+        <label class="checkbox-container" for="gen7">
+          7
+          <input type="checkbox" name="gen7" id="gen7" value="7" checked />
+          <span class="checkmark"></span>
+        </label>
+      </div>
+      <div class="pokemon-info">
+        <input
+          type="button"
+          class="button"
+          value="Start Drawing"
+          onclick="start_countdown()"
+        />
+
+        <input
+          type="button"
+          id="how_to_button"
+          class="button"
+          value="Hide Tutorial"
+        />
+        <h2 id="pokemon_name"></h2>
+        <img id="pokemon_image" />
+        <div class="how-to-wrapper">
+          <div id="how_to_div" class="">
+            <p>
+              1. Select what generations to use.
+              <br />
+              2. Have some friends join your room.
+              <br />
+              3. Press Start Drawing.
+              <br />
+              4. You have 45 seconds to draw the pokemon you see.
+              <br />
+              5. Have your friends guess what pokemon you are drawing.
+              <br />
+              6. Add a score to the one who guesses correctly first.
+              <br />
+              7. Repeat!
+              <br />
+              Tip: Holding CTRL while drawing will erase instead of draw!
+            </p>
+          </div>
+        </div>
+        <div id="user_already_drawing" class="user-already-drawing hidden">
+          <p>Someone is already drawing. Please wait.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="players-in-lobby-wrapper">
+    <div class="centered">
+      <div class="info-header drawing-status">
+        <b>Players in lobby:</b>
+      </div>
+      <div class="user-info">
+        <ul class="user-list" id="users_list">
+          <li><b>Names: </b></li>
+          <br />
+        </ul>
+        <ul class="user-list" id="users_timestamp_list">
+          <li><b>Joined: </b></li>
+          <br />
+        </ul>
+        <ul class="user-list" id="users_score_list">
+          <li><b>Score: </b></li>
+          <br />
+        </ul>
+        <ul class="user-list" id="users_status_list">
+          <li><b>Status: </b></li>
+          <br />
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock%} {% block footer_imports %}
+<script
+  type="text/javascript"
+  src="{{ url_for('static',filename='js/draw.js') }}"
+></script>
+{% endblock %}

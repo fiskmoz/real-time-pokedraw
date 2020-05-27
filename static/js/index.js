@@ -26,12 +26,12 @@ function init() {
       let userData;
       try {
         pixelData = JSON.parse(data["pixels"]);
-      } catch(error) {
+      } catch (error) {
         continue;
       }
       try {
         userData = data["users"];
-      } catch(error) {
+      } catch (error) {
         userData = {};
       }
       if (JSON.stringify(userData) == "{}") {
@@ -130,7 +130,7 @@ function init() {
       Math.floor(event.offsetY / (PIXELSIZE * DIMENSION)),
     ];
     window.location =
-      "draw.php?x=" + pixel[0] + "&y=" + pixel[1] + "&user=" + globalUser;
+      "draw?x=" + pixel[0] + "&y=" + pixel[1] + "&user=" + globalUser;
   });
 }
 
