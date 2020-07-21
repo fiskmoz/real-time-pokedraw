@@ -72,7 +72,7 @@ def remove_inactive():
     if request.args.get('admin') != admin:
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')
     p = subprocess.run(
-        "py ./static/scripts/_scheduled_remove_inactive_users.py 1", stdout=subprocess.PIPE, shell=True)
+        "python ./static/scripts/_scheduled_remove_inactive_users.py 1", stdout=subprocess.PIPE, shell=True)
     return Response(p.stdout, status=200, mimetype='application/json')
 
 
