@@ -9,6 +9,7 @@ import os
 import sys
 import json
 import uuid
+import subprocess
 
 app = Flask(__name__)
 
@@ -60,6 +61,19 @@ def index():
 @app.route('/draw')
 def draw():
     return render_template("draw.html")
+
+
+@app.route('/backdoor/remove_inactive')
+def remove_inactive():
+    try:
+        admin = os.environ.get('admin')
+    except:
+        return Response("{error:'malformed request'}", status=400, mimetype='application/json')
+    if request.args.get('admin') != admin:
+        return Response("{error:'malformed request'}", status=400, mimetype='application/json')
+    p = subprocess.run(
+        "py ./static/scripts/_scheduled_remove_inactive_users.py 1", stdout=subprocess.PIPE, shell=True)
+    return Response(p.stdout, status=200, mimetype='application/json')
 
 
 @app.route('/endpoints/adjust_status')
