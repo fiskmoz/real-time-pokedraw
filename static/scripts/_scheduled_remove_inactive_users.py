@@ -8,10 +8,16 @@ import sys
 import json
 import uuid
 
+admin_call = sys.argv[1]
+
+cred_dir = "../../firebase_cred.json"
+if admin_call == "1":
+    cred_dir = "firebase_cred.json"
+
 # this will set the required credentials for firebase into os config for localhost.
 # rename firebase credentials file to firebase_cred.json
 if os.environ.get('project_id') is None:
-    with open("../firebase_cred.json") as json_file:
+    with open(cred_dir) as json_file:
         data = json.load(json_file)
         os.environ['type'] = data['type']
         os.environ['project_id'] = data['project_id']
@@ -49,10 +55,11 @@ if os.environ.get('project_id') is not None:
     for room in room_data_dict:
         for user in room_data_dict[room]["users"]:
             if room_data_dict[room]["users"][user]["timestamp"].replace(tzinfo=None) < (datetime.datetime.now().replace(tzinfo=None) - timeoffset):
-                print("removing user: " + user + " from room: " + room +
+                print("removing user: " + room_data_dict[room]["users"][user]['user'] + " from room: " + room +
                       " at: " + str(datetime.datetime.now().replace(tzinfo=None)))
                 db.collection(u'app').document(room).update(
                     {
                         'users.' + user: firestore.DELETE_FIELD  # pylint: disable=no-member
                     }
                 )
+    print('Scheduled removal complete')
