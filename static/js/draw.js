@@ -135,6 +135,9 @@ function init() {
   });
   let checkboxJson = JSON.parse(localStorage.getItem("generations"));
   if (!!checkboxJson) SetDefaultCheckboxes(checkboxJson);
+  let tutorialBoolean = JSON.parse(localStorage.getItem("tutorial"));
+  if (typeof tutorialBoolean === "boolean") howToHidden = tutorialBoolean;
+  ToggleHowToPlay();
 
   canvas_element.addEventListener("mousemove", Fill, false);
   canvas_element.addEventListener("mousedown", Fill, false);
@@ -529,6 +532,7 @@ function SetInnerHtmlLiScore(element, _identifier, score, index) {
 
 how_to_button.onclick = function () {
   ToggleHowToPlay();
+  localStorage.setItem("tutorial", !howToHidden);
 };
 
 function ChangeDrawStatus() {
