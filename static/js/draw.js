@@ -141,52 +141,48 @@ function init() {
   if (typeof tutorialBoolean === "boolean") howToHidden = tutorialBoolean;
   ToggleHowToPlay();
 
-  if ("createTouch" in document || "onstarttouch" in window) {
-    console.log("touch detected");
-    canvas_element.addEventListener(
-      "touchstart",
-      (e) => {
-        e.preventDefault();
-        if (event.srcElement.id != canvas_element.id) return;
-        isDrawing = true;
-        Fill(e);
-        console.log("touchstart");
-        return false;
-      },
-      false
-    );
-    canvas_element.addEventListener(
-      "touchmove",
-      (e) => {
-        e.preventDefault();
-        Fill(e);
-        console.log("touchmove");
-        return false;
-      },
-      false
-    );
-    canvas_element.addEventListener(
-      "touchend",
-      (e) => {
-        e.preventDefault();
-        if (
-          event.srcElement.id != canvas_element.id ||
-          colorJustSelected == true ||
-          isWatching == true
-        )
-          return;
-        isDrawing = false;
-        save();
-        previousPixel = [-1, -1];
-        console.log("touchend");
-        return false;
-      },
-      false
-    );
-  } else {
-    canvas_element.addEventListener("mousemove", Fill, false);
-    canvas_element.addEventListener("mousedown", Fill, false);
-  }
+  canvas_element.addEventListener(
+    "touchstart",
+    (e) => {
+      e.preventDefault();
+      if (event.srcElement.id != canvas_element.id) return;
+      isDrawing = true;
+      Fill(e);
+      console.log("touchstart");
+      return false;
+    },
+    false
+  );
+  canvas_element.addEventListener(
+    "touchmove",
+    (e) => {
+      e.preventDefault();
+      Fill(e);
+      console.log("touchmove");
+      return false;
+    },
+    false
+  );
+  canvas_element.addEventListener(
+    "touchend",
+    (e) => {
+      e.preventDefault();
+      if (
+        event.srcElement.id != canvas_element.id ||
+        colorJustSelected == true ||
+        isWatching == true
+      )
+        return;
+      isDrawing = false;
+      save();
+      previousPixel = [-1, -1];
+      console.log("touchend");
+      return false;
+    },
+    false
+  );
+  canvas_element.addEventListener("mousemove", Fill, false);
+  canvas_element.addEventListener("mousedown", Fill, false);
   pickr.on("change", function () {
     selectedColor = pickr.getColor().toHEXA().toString();
     colorJustSelected = true;
