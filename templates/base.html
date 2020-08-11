@@ -27,6 +27,7 @@
     <link rel="mask-icon" href="{{ url_for('static', filename='/favicon/safari-pinned-tab.svg') }}" color="#5bbad5" />
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="theme-color" content="#ffffff" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script>
       // Your web app's Firebase configuration
@@ -50,6 +51,7 @@
     <div class="header">
       <a id="title" href="/">
         <img
+          class="center-fit"
           src="https://fontmeme.com/permalink/200422/a58eeebd41d1d7c606dc4e1881cc5acf.png"
           alt="pokemon-font"
           border="0"
@@ -69,27 +71,19 @@
     {% endblock %}
   </body>
   <footer>
-    <div class="footer">
-        <div class="promo-message">
-          Hi there!
-          <br />
-          Help me fund better servers and more database power
-          <br />
-          for a more responsive real-time!
-          <a href="https://paypal.me/pools/c/8oGaCNgaQO" target="_blank"
-            >Click Here!
-          </a>
-        </div>
+    <div class="promo-message">
+      Like Real-time pokédraw?
+      <br>
+      <a href="https://paypal.me/pools/c/8oGaCNgaQO" target="_blank"
+        >Help fund the project here
+      </a>
+    </div>
       
-        <div class="function-footer">
-          <input type="button" id="rename_button" class="button" value="Rename" />
-          <br />
-          <br />
-          <a href="https://github.com/fiskmoz/real-time-pokedraw">Source Code</a>
-        </div>
-      </div>
-      <script type= "text/javascript" src="{{ url_for('static',filename='js/globals.js') }}"></script>
-      {% block footer_imports %}
-      {% endblock%}
+    <div class="function-footer">
+      <input type="button" id="rename_button" class="button" value="Rename" />
+    </div>
+    <script type= "text/javascript" src="{{ url_for('static',filename='js/globals.js') }}"></script>
+    {% block footer_imports %}
+    {% endblock%}
   </footer>
 </html>

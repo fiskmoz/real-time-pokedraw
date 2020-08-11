@@ -16,6 +16,8 @@ const XSITE = get("x");
 const YSITE = get("y");
 const WIDTH = canvas_element.clientWidth;
 const HEIGHT = canvas_element.clientWidth;
+canvas_element.setAttribute("width", WIDTH);
+canvas_element.setAttribute("height", HEIGHT);
 const PIXELSIZE = WIDTH / DIMENSION;
 
 let clientIdentifier = "";
@@ -139,8 +141,52 @@ function init() {
   if (typeof tutorialBoolean === "boolean") howToHidden = tutorialBoolean;
   ToggleHowToPlay();
 
-  canvas_element.addEventListener("mousemove", Fill, false);
-  canvas_element.addEventListener("mousedown", Fill, false);
+  if ("createTouch" in document || "onstarttouch" in window) {
+    console.log("touch detected");
+    canvas_element.addEventListener(
+      "touchstart",
+      (e) => {
+        e.preventDefault();
+        if (event.srcElement.id != canvas_element.id) return;
+        isDrawing = true;
+        Fill(e);
+        console.log("touchstart");
+        return false;
+      },
+      false
+    );
+    canvas_element.addEventListener(
+      "touchmove",
+      (e) => {
+        e.preventDefault();
+        Fill(e);
+        console.log("touchmove");
+        return false;
+      },
+      false
+    );
+    canvas_element.addEventListener(
+      "touchend",
+      (e) => {
+        e.preventDefault();
+        if (
+          event.srcElement.id != canvas_element.id ||
+          colorJustSelected == true ||
+          isWatching == true
+        )
+          return;
+        isDrawing = false;
+        save();
+        previousPixel = [-1, -1];
+        console.log("touchend");
+        return false;
+      },
+      false
+    );
+  } else {
+    canvas_element.addEventListener("mousemove", Fill, false);
+    canvas_element.addEventListener("mousedown", Fill, false);
+  }
   pickr.on("change", function () {
     selectedColor = pickr.getColor().toHEXA().toString();
     colorJustSelected = true;
@@ -239,8 +285,18 @@ function Fill(event) {
   if (isWatching) return;
   if (event.srcElement.id != canvas_element.id || !isDrawing) return;
   let pixel = [
-    Math.floor(event.offsetX / PIXELSIZE),
-    Math.floor(event.offsetY / PIXELSIZE),
+    Math.floor(
+      (!!event.offsetX
+        ? event.offsetX
+        : event.targetTouches[0].clientX -
+          event.target.getBoundingClientRect().x) / PIXELSIZE
+    ),
+    Math.floor(
+      (!!event.offsetY
+        ? event.offsetY
+        : event.targetTouches[0].clientY -
+          event.target.getBoundingClientRect().y) / PIXELSIZE
+    ),
   ];
   if (pixel[0] == previousPixel[0] && pixel[1] == previousPixel[1]) return;
   event.ctrlKey ? ClearPixel(pixel) : FillPixel(pixel, selectedColor);
