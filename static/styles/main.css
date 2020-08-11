@@ -1,3 +1,55 @@
+@media only screen and (max-width: 600px) {
+  .pcr-app {
+    left: 0px !important;
+    margin-top: 30px !important;
+  }
+  .preview-canvas-wrapper {
+    overflow: auto;
+    white-space: nowrap;
+  }
+  .header {
+    padding: 20px 10px 20px 10px !important;
+  }
+  .draw-canvas {
+    width: 90% !important;
+    height: auto !important;
+  }
+  .draw-canvas-wrapper {
+    height: 100% !important;
+    min-width: 98% !important;
+  }
+  .generation-selection-wrapper {
+    height: 100% !important;
+    min-width: 98% !important;
+    max-width: 98% !important;
+    padding-left: 0px !important;
+  }
+  .players-in-lobby-wrapper {
+    padding-left: 0 !important;
+    min-width: 98% !important;
+    width: 98% !important;
+  }
+  .pokemon-info {
+    min-width: 100px !important;
+  }
+  .drawing-wrapper {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .user-list {
+    padding-left: 7%;
+  }
+  .modal-content {
+    width: 80% !important;
+  }
+}
+
+.center-fit {
+  max-width: 100%;
+  max-height: 100vh;
+  margin: auto;
+}
+
 .header {
   padding: 35px;
   text-align: center;
@@ -13,10 +65,12 @@
     rgba(148, 109, 155, 0.9)
   );
   font-size: 30px;
+  display: grid;
+  height: 100%;
 }
 
 footer {
-  display: inline-block;
+  display: flex;
   background-image: linear-gradient(
     to right,
     rgba(244, 42, 53, 0.9),
@@ -80,6 +134,8 @@ body {
 .draw-canvas {
   margin: 8px 0 8px 0px;
   background-color: white;
+  width: 600px;
+  height: 600px;
 }
 
 .watching {
@@ -133,6 +189,8 @@ body {
   max-height: 40px;
   padding: 5px;
   display: flex;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .info-header {
@@ -277,7 +335,19 @@ body {
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  border-radius: 10px;
+  width: 25%;
+  background-image: linear-gradient(
+    to right,
+    rgba(244, 42, 53, 0.9),
+    rgba(255, 162, 0, 0.9),
+    rgba(255, 213, 0, 0.9),
+    rgba(168, 191, 18, 0.9),
+    rgba(46, 181, 47, 0.9),
+    rgba(0, 170, 181, 0.9),
+    rgba(50, 91, 197, 0.9),
+    rgba(148, 109, 155, 0.9)
+  );
 }
 
 .user-list {
@@ -315,6 +385,7 @@ body {
 .function-footer {
   float: right;
   padding: 10px;
+  margin-left: auto;
 }
 
 .how-to-wrapper {
