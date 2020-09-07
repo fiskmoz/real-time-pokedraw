@@ -1,6 +1,7 @@
 const canvas_element = document.getElementById("draw_canvas");
 const timer_element = document.getElementById("timer");
 const context = canvas_element.getContext("2d");
+const stop_drawing_button = document.getElementById("stop_drawing_button");
 const users_list_element = document.getElementById("users_list");
 const how_to_button = document.getElementById("how_to_button");
 const how_to_div = document.getElementById("how_to_div");
@@ -54,11 +55,7 @@ function init() {
       // Handle pixel data.
       if (pixelData != null) {
         if (Object.keys(pixelData["data"]).length === 0) {
-          for (let x = 1; x < DIMENSION - 1; x++) {
-            for (let y = 1; y < DIMENSION - 1; y++) {
-              ClearPixel([x, y]);
-            }
-          }
+          ClearCanvas();
         } else {
           for (let subkey in pixelData["data"]) {
             let subcoordniate = subkey.split(",");
@@ -145,10 +142,10 @@ function init() {
     "touchstart",
     (e) => {
       e.preventDefault();
-      if (event.srcElement.id != canvas_element.id) return;
+      if (event.srcElement.id != canvas_element.id || colorJustSelected == true)
+        return;
       isDrawing = true;
       Fill(e);
-      console.log("touchstart");
       return false;
     },
     false
@@ -158,7 +155,6 @@ function init() {
     (e) => {
       e.preventDefault();
       Fill(e);
-      console.log("touchmove");
       return false;
     },
     false
@@ -176,7 +172,6 @@ function init() {
       isDrawing = false;
       save();
       previousPixel = [-1, -1];
-      console.log("touchend");
       return false;
     },
     false
@@ -185,10 +180,11 @@ function init() {
   canvas_element.addEventListener("mousedown", Fill, false);
   pickr.on("change", function () {
     selectedColor = pickr.getColor().toHEXA().toString();
+    pickr.hide();
     colorJustSelected = true;
     setTimeout(() => {
       colorJustSelected = false;
-    }, 250);
+    }, 100);
   });
 
   window.stop_drawing = function () {
@@ -219,6 +215,7 @@ function init() {
           "class",
           "user-already-drawing hidden"
         );
+        stop_drawing_button.setAttribute("class", "button");
         ChangeDrawStatus();
         timer = TIMERDEFAULT;
         timer_element.innerHTML = timer.toString();
@@ -262,8 +259,10 @@ function init() {
       event.srcElement.id != canvas_element.id ||
       colorJustSelected == true ||
       isWatching == true
-    )
+    ) {
+      isDrawing = false;
       return;
+    }
     isDrawing = false;
     save();
     previousPixel = [-1, -1];
@@ -271,7 +270,10 @@ function init() {
   });
 
   window.addEventListener("mousedown", (e) => {
-    if (event.srcElement.id != canvas_element.id) return;
+    if (event.srcElement.id != canvas_element.id) {
+      isDrawing = false;
+      return;
+    }
     isDrawing = true;
     Fill(e);
   });
@@ -279,7 +281,7 @@ function init() {
 
 function Fill(event) {
   if (isWatching) return;
-  if (event.srcElement.id != canvas_element.id || !isDrawing) return;
+  if (!isDrawing) return;
   let pixel = [
     Math.floor(
       (!!event.offsetX
@@ -311,14 +313,13 @@ function FillPixel(pixel, color) {
 }
 
 function ClearPixel(pixel) {
+  if (filledPixels[pixel[0] + "," + pixel[1]] == DEFAULTWHITE) return;
   filledPixels[pixel[0] + "," + pixel[1]] = DEFAULTWHITE;
   let cpx = Math.floor(pixel[0] * PIXELSIZE) + 0.5;
   let cpy = Math.floor(pixel[1] * PIXELSIZE) + 0.5;
-  let cps = Math.floor(PIXELSIZE - 1.2) + 0.5;
+  let cps = Math.floor(PIXELSIZE - 1.3) + 0.5;
   context.fillStyle = DEFAULTWHITE;
-  for (let i = 0; i < 3; i++) {
-    context.fillRect(cpx, cpy, cps, cps);
-  }
+  context.fillRect(cpx, cpy, cps, cps);
 }
 
 function ClearCanvas() {
@@ -388,6 +389,7 @@ function StopDrawing() {
     null
   );
   canvas_element.setAttribute("class", "draw-canvas watching");
+  stop_drawing_button.setAttribute("class", "button hidden");
   isWatching = true;
   isDrawing = false;
   timer = TIMERDEFAULT;
@@ -451,13 +453,13 @@ function GetPokedexIdMultipleGenerations() {
   localStorage.setItem(
     "generations",
     JSON.stringify({
-      "1": gen1,
-      "2": gen2,
-      "3": gen3,
-      "4": gen4,
-      "5": gen5,
-      "6": gen6,
-      "7": gen7,
+      1: gen1,
+      2: gen2,
+      3: gen3,
+      4: gen4,
+      5: gen5,
+      6: gen6,
+      7: gen7,
     })
   );
   return possiblePokemon.length

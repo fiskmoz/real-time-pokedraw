@@ -69,6 +69,16 @@
   height: 100%;
 }
 
+.site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1 0 0;
+}
+
 footer {
   display: flex;
   background-image: linear-gradient(
@@ -106,7 +116,7 @@ body {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .preview-canvas-wrapper {
@@ -186,7 +196,7 @@ body {
 
 .painter-header {
   border: black 2px solid;
-  max-height: 40px;
+  max-height: 63px;
   padding: 5px;
   display: flex;
   margin-left: 2px;
@@ -278,9 +288,9 @@ body {
   padding-right: 20px;
 }
 
-.pickr {
-  padding: 1px;
-  border: black 4px solid;
+.pcr-button {
+  width: 3em !important;
+  height: 3em !important;
 }
 
 .button {
