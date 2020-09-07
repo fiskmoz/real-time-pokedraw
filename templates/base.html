@@ -49,7 +49,7 @@
     {% block header_imports %}
     {% endblock%}
   </head>
-  <body>
+  <body class="site">
     <div class="header">
       <a id="title" href="/">
         <img
@@ -69,8 +69,10 @@
           <span id="modal_close_btn" class="button">Save</span>
         </div>
       </div>
-    {% block content %}
-    {% endblock %}
+    <div class="site-content">    
+      {% block content %}
+      {% endblock %}
+    </div>
   </body>
   <footer>
     <div class="promo-message">
