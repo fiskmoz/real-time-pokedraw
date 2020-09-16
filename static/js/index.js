@@ -1,4 +1,5 @@
 const canvas_element = document.getElementById("preview_canvas");
+const active_users_element = document.getElementById("active_users");
 const context = canvas_element.getContext("2d");
 const PIXELSIZE = 2;
 const XREPEAT = 20;
@@ -66,6 +67,13 @@ function init() {
         fillPixel(coordinate, subcoordniate, color);
       }
     }
+    let total = 0;
+    for (let key in usersInRoomsDict) {
+      if (!usersInRoomsDict[key][1]) {
+        total += parseInt(usersInRoomsDict[key][0]);
+      }
+    }
+    active_users_element.innerText = "Active users in rooms: " + total + "  ツ";
   });
 
   document.body.addEventListener("mousemove", function (event) {
