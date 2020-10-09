@@ -523,9 +523,14 @@ function ClearUserList() {
 }
 
 function AppendUsersToList(data, _identifier, index) {
-  let offsetTime = new Date(
+  try {
+    let offsetTime = new Date(
     data["users"][_identifier]["timestamp"].toDate().getTime()
   );
+  }
+    catch (e){
+      return;
+    }
   let li = document.createElement("li");
   li.appendChild(document.createTextNode(data["users"][_identifier]["user"]));
   users_list_element.appendChild(li);
