@@ -41,14 +41,20 @@ function init() {
         let isRoomActive = true;
         let usersLen = 0;
         for (let _identifier in userData) {
-          if (
-            new Date(
-              userData[_identifier]["timestamp"].toDate().getTime() +
-                180 * 60 * 1000
-            ).getTime() > Date.now()
-          ) {
-            isRoomActive = false;
+          try {
+            if (
+            
+              new Date(
+                userData[_identifier]["timestamp"].toDate().getTime() +
+                  180 * 60 * 1000
+              ).getTime() > Date.now()
+            ) {
+              isRoomActive = false;
+            }
+          } catch (e){
+            
           }
+
           usersLen++;
         }
         usersInRoomsDict[key] = [usersLen, isRoomActive];
