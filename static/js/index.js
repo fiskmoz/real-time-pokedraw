@@ -43,7 +43,6 @@ function init() {
         for (let _identifier in userData) {
           try {
             if (
-            
               new Date(
                 userData[_identifier]["timestamp"].toDate().getTime() +
                   180 * 60 * 1000
@@ -51,9 +50,7 @@ function init() {
             ) {
               isRoomActive = false;
             }
-          } catch (e){
-            
-          }
+          } catch (e) {}
 
           usersLen++;
         }
