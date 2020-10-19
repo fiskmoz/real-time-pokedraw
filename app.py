@@ -31,6 +31,8 @@ if os.environ.get('project_id') is None:
             "auth_provider_x509_cert_url": data['auth_provider_x509_cert_url'],
             "client_x509_cert_url": data['client_x509_cert_url'],
         })
+        app.config['ENV'] = 'development'
+        app.config['DEBUG'] = True
 
 if os.environ.get('project_id') is not None:
     cred = credentials.Certificate({

@@ -8,9 +8,6 @@ const how_to_div = document.getElementById("how_to_div");
 const user_already_drawing_element = document.getElementById(
   "user_already_drawing"
 );
-const users_timestamp_list_element = document.getElementById(
-  "users_timestamp_list"
-);
 const users_score_list_element = document.getElementById("users_score_list");
 const users_status_list_element = document.getElementById("users_status_list");
 const XSITE = get("x");
@@ -232,6 +229,18 @@ function init() {
   };
 
   window.addEventListener("beforeunload", async function (e) {
+    var firefox = /Firefox[\/\s](\d+)/.test(navigator.userAgent);
+
+    if (firefox) {
+      setTimeout(async function () {
+        await UserLeaving();
+      }, 0);
+    } else {
+      await UserLeaving();
+    }
+  });
+
+  async function UserLeaving() {
     await asyncXhrRequest(
       "GET",
       "endpoints/leaving?x=" +
@@ -242,8 +251,7 @@ function init() {
         clientIdentifier,
       null
     );
-    return;
-  });
+  }
 
   window.addEventListener("DOMContentLoaded", async function (e) {
     await asyncXhrRequest(
@@ -517,32 +525,14 @@ async function AdjustScore(_identifier, newScore, index) {
 
 function ClearUserList() {
   users_list_element.innerHTML = "<li><b>Names: </b> </li> </br>";
-  users_timestamp_list_element.innerHTML = "<li><b>Joined: </b> </li> </br>";
   users_score_list_element.innerHTML = "<li><b>Score: </b> </li> </br>";
   users_status_list_element.innerHTML = "<li><b>Status: </b> </li> </br>";
 }
 
 function AppendUsersToList(data, _identifier, index) {
-  try {
-    let offsetTime = new Date(
-    data["users"][_identifier]["timestamp"].toDate().getTime()
-  );
-  }
-    catch (e){
-      return;
-    }
   let li = document.createElement("li");
   li.appendChild(document.createTextNode(data["users"][_identifier]["user"]));
   users_list_element.appendChild(li);
-  let liTime = document.createElement("li");
-  liTime.appendChild(
-    document.createTextNode(
-      offsetTime
-        .toLocaleTimeString()
-        .substr(0, offsetTime.toLocaleTimeString().length - 3)
-    )
-  );
-  users_timestamp_list_element.appendChild(liTime);
   let liScore = document.createElement("li");
   liScore.setAttribute("id", "userLi" + index);
   SetInnerHtmlLiScore(
