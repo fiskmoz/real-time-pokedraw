@@ -240,19 +240,6 @@ function init() {
     }
   });
 
-  async function UserLeaving() {
-    await asyncXhrRequest(
-      "GET",
-      "endpoints/leaving?x=" +
-        XSITE +
-        "&y=" +
-        YSITE +
-        "&user=" +
-        clientIdentifier,
-      null
-    );
-  }
-
   window.addEventListener("DOMContentLoaded", async function (e) {
     await asyncXhrRequest(
       "GET",
@@ -405,58 +392,41 @@ function StopDrawing() {
   this.clearInterval(timeout);
 }
 
+async function UserLeaving() {
+  await asyncXhrRequest(
+    "GET",
+    "endpoints/leaving?x=" +
+      XSITE +
+      "&y=" +
+      YSITE +
+      "&user=" +
+      clientIdentifier,
+    null
+  );
+}
+
 function GetPokedexIdMultipleGenerations() {
   let possiblePokemon = [];
   let gen1 = document.getElementById("gen1").checked
     ? possiblePokemon.push(Math.floor(Math.random() * GEN1INTERVALS[1] + 1))
     : null;
   let gen2 = document.getElementById("gen2").checked
-    ? possiblePokemon.push(
-        Math.floor(
-          Math.random() * (GEN2INTERVALS[1] - GEN2INTERVALS[0]) +
-            GEN2INTERVALS[0]
-        )
-      )
+    ? possiblePokemon.push(GetRandomFromInterval(GEN2INTERVALS))
     : null;
   let gen3 = document.getElementById("gen3").checked
-    ? possiblePokemon.push(
-        Math.floor(
-          Math.random() * (GEN3INTERVALS[1] - GEN3INTERVALS[0]) +
-            GEN3INTERVALS[0]
-        )
-      )
+    ? possiblePokemon.push(GetRandomFromInterval(GEN3INTERVALS))
     : null;
   let gen4 = document.getElementById("gen4").checked
-    ? possiblePokemon.push(
-        Math.floor(
-          Math.random() * (GEN4INTERVALS[1] - GEN4INTERVALS[0]) +
-            GEN4INTERVALS[0]
-        )
-      )
+    ? possiblePokemon.push(GetRandomFromInterval(GEN4INTERVALS))
     : null;
   let gen5 = document.getElementById("gen5").checked
-    ? possiblePokemon.push(
-        Math.floor(
-          Math.random() * (GEN5INTERVALS[1] - GEN5INTERVALS[0]) +
-            GEN5INTERVALS[0]
-        )
-      )
+    ? possiblePokemon.push(GetRandomFromInterval(GENINTERVALS))
     : null;
   let gen6 = document.getElementById("gen6").checked
-    ? possiblePokemon.push(
-        Math.floor(
-          Math.random() * (GEN6INTERVALS[1] - GEN6INTERVALS[0]) +
-            GEN6INTERVALS[0]
-        )
-      )
+    ? possiblePokemon.push(GetRandomFromInterval(GEN6INTERVALS))
     : null;
   let gen7 = document.getElementById("gen7").checked
-    ? possiblePokemon.push(
-        Math.floor(
-          Math.random() * (GEN7INTERVALS[1] - GEN7INTERVALS[0]) +
-            GEN7INTERVALS[0]
-        )
-      )
+    ? possiblePokemon.push(GetRandomFromInterval(GEN7INTERVALS))
     : null;
   localStorage.setItem(
     "generations",
@@ -475,6 +445,10 @@ function GetPokedexIdMultipleGenerations() {
         Math.floor(Math.random() * possiblePokemon.length)
       ].toString()
     : "-1";
+}
+
+function GetRandomFromInterval(interval) {
+  return Math.floor(Math.random() * (interval[1] - interval[0]) + interval[0]);
 }
 
 async function save() {
