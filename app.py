@@ -119,14 +119,16 @@ def player_joining():
     room_ref = db.collection(u'app').document(key)
     room_dict = room_ref.get().to_dict()
     if bool(room_dict):
-        data = {}
-        data["users." + identifier] = {
-            'user': user,
-            'timestamp': datetime.datetime.utcnow(),
-            "score": "0",
-            "isDrawing": False
-        }
-        room_ref.update(data)
+        room_ref.update(
+            {
+                'users.' + identifier: {
+                    'user': user,
+                    'timestamp': datetime.datetime.utcnow(),
+                    "score": "0",
+                    "isDrawing": False
+                }
+            }
+        )
     else:
         room_ref.set({
             "pixels": '{"data":{}}',

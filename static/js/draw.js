@@ -536,7 +536,7 @@ function SetInnerHtmlLiScore(element, _identifier, score, index) {
     "'" +
     _identifier +
     "'," +
-    (score - 1) +
+    (parseInt(score) - 1) +
     "," +
     index +
     ')">' +

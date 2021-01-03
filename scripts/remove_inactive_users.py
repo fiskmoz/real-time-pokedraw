@@ -45,20 +45,27 @@ if os.environ.get('project_id') is not None:
     db = firestore.client()
 
     room_data_raw = db.collection(u'app').stream()
-    timeoffset = datetime.timedelta(minutes=60)
+    timeoffset = datetime.timedelta(days=0, seconds=0, hours=0, minutes=30)
     room_data_dict = {element.id: element.to_dict()
                       for element in room_data_raw}
     for room in room_data_dict:
         for user in room_data_dict[room]["users"]:
             try:
-                if room_data_dict[room]["users"][user]["timestamp"].replace(tzinfo=None) < (datetime.datetime.now().replace(tzinfo=None) - timeoffset):
-                    print("removing user: " + room_data_dict[room]["users"][user]['user'] + " from room: " + room +
-                          " at: " + str(datetime.datetime.now().replace(tzinfo=None)))
+                if room_data_dict[room]["users"][user]["timestamp"].replace(tzinfo=None) < (datetime.datetime.utcnow().replace(tzinfo=None) - timeoffset):
+                    print(
+                        "removing user: " + room_data_dict[room]["users"][user]['user'] + " because time has expired")
                     db.collection(u'app').document(room).update(
                         {
                             'users.' + user: firestore.DELETE_FIELD  # pylint: disable=no-member
                         }
                     )
             except KeyError:
-                pass
+                print(
+                    "removing user: " + str(room_data_dict[room]["users"][user]) + " timestamp is missing")
+                db.collection(u'app').document(room).update(
+                    {
+                        'users.' + user: firestore.DELETE_FIELD  # pylint: disable=no-member
+                    }
+                )
+
     print('Scheduled removal complete')
