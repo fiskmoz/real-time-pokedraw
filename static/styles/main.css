@@ -3,10 +3,6 @@
     left: 0px !important;
     margin-top: 30px !important;
   }
-  .preview-canvas-wrapper {
-    overflow: auto;
-    white-space: nowrap;
-  }
   .header {
     padding: 20px 10px 20px 10px !important;
   }
@@ -126,6 +122,8 @@ body {
   padding-top: 5px;
   padding-bottom: 5px;
   border-top: #000000 1px solid;
+  overflow: auto;
+  white-space: nowrap;
 }
 
 .preview-canvas {
@@ -362,6 +360,8 @@ body {
 
 .user-list {
   list-style-type: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .error-container {
