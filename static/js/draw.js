@@ -420,7 +420,7 @@ function GetPokedexIdMultipleGenerations() {
     ? possiblePokemon.push(GetRandomFromInterval(GEN4INTERVALS))
     : null;
   let gen5 = document.getElementById("gen5").checked
-    ? possiblePokemon.push(GetRandomFromInterval(GENINTERVALS))
+    ? possiblePokemon.push(GetRandomFromInterval(GEN5INTERVALS))
     : null;
   let gen6 = document.getElementById("gen6").checked
     ? possiblePokemon.push(GetRandomFromInterval(GEN6INTERVALS))
