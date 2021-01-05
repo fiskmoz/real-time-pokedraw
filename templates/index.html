@@ -1,11 +1,12 @@
 {% extends "base.html" %} {% block header_imports %} {% endblock %} {% block
 content %}
 <div id="canvas_wrapper" class="preview-canvas-wrapper">
+  <div>
+    <p class="centered" id="active_users">Active users: 0 ツ</p>
+  </div>
   <canvas id="preview_canvas" class="preview-canvas"></canvas>
 </div>
-<div>
-  <p class="centered" id="active_users"></p>
-</div>
+
 {% endblock%} {% block footer_imports %}
 <script
   type="text/javascript"

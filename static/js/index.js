@@ -17,67 +17,73 @@ canvas_element.setAttribute("height", HEIGHT);
 function init() {
   clear();
   let isSelected = false;
-  db.collection("app").onSnapshot(function (grid) {
-    for (let change of grid.docChanges()) {
-      if (!change.doc) continue;
-      let key = change.doc.id;
-      let data = change.doc.data();
-      let coordinate = key.split(",");
-      let pixelData;
-      let userData;
-      try {
-        pixelData = JSON.parse(data["pixels"]);
-      } catch (error) {
-        continue;
-      }
-      try {
-        userData = data["users"];
-      } catch (error) {
-        userData = {};
-      }
-      if (JSON.stringify(userData) == "{}") {
-        usersInRoomsDict[key] = ["0", true];
-      } else {
-        let isRoomActive = true;
-        let usersLen = 0;
-        for (let _identifier in userData) {
-          try {
-            if (
-              new Date(
-                userData[_identifier]["timestamp"].toDate().getTime() +
-                  180 * 60 * 1000
-              ).getTime() > Date.now()
-            ) {
-              isRoomActive = false;
-            }
-          } catch (e) {}
+  db.collection("app").onSnapshot(
+    function (grid) {
+      for (let change of grid.docChanges()) {
+        if (!change.doc) continue;
+        let key = change.doc.id;
+        let data = change.doc.data();
+        let coordinate = key.split(",");
+        let pixelData;
+        let userData;
+        try {
+          pixelData = JSON.parse(data["pixels"]);
+        } catch (error) {
+          continue;
+        }
+        try {
+          userData = data["users"];
+        } catch (error) {
+          userData = {};
+        }
+        if (JSON.stringify(userData) == "{}") {
+          usersInRoomsDict[key] = ["0", true];
+        } else {
+          let isRoomActive = true;
+          let usersLen = 0;
+          for (let _identifier in userData) {
+            try {
+              if (
+                new Date(
+                  userData[_identifier]["timestamp"].toDate().getTime() +
+                    180 * 60 * 1000
+                ).getTime() > Date.now()
+              ) {
+                isRoomActive = false;
+              }
+            } catch (e) {}
 
-          usersLen++;
-        }
-        usersInRoomsDict[key] = [usersLen, isRoomActive];
-      }
-      if (Object.keys(pixelData["data"]).length === 0) {
-        for (let x = 1; x < DIMENSION - 1; x++) {
-          for (let y = 1; y < DIMENSION - 1; y++) {
-            fillPixel(coordinate, [x, y], DEFAULTWHITE);
+            usersLen++;
           }
+          usersInRoomsDict[key] = [usersLen, isRoomActive];
         }
-        continue;
+        if (Object.keys(pixelData["data"]).length === 0) {
+          for (let x = 1; x < DIMENSION - 1; x++) {
+            for (let y = 1; y < DIMENSION - 1; y++) {
+              fillPixel(coordinate, [x, y], DEFAULTWHITE);
+            }
+          }
+          continue;
+        }
+        for (let subkey in pixelData["data"]) {
+          let subcoordniate = subkey.split(",");
+          let color = pixelData["data"][subcoordniate];
+          fillPixel(coordinate, subcoordniate, color);
+        }
       }
-      for (let subkey in pixelData["data"]) {
-        let subcoordniate = subkey.split(",");
-        let color = pixelData["data"][subcoordniate];
-        fillPixel(coordinate, subcoordniate, color);
+      let total = 0;
+      for (let key in usersInRoomsDict) {
+        if (!usersInRoomsDict[key][1]) {
+          total += parseInt(usersInRoomsDict[key][0]);
+        }
       }
+      active_users_element.innerText = "Active users: " + total + "  ツ";
+    },
+    function (error) {
+      active_users_element.innerText =
+        "Todays quota period exeeded \n Try again tomorrow ¯\\_(ツ)_/¯ ";
     }
-    let total = 0;
-    for (let key in usersInRoomsDict) {
-      if (!usersInRoomsDict[key][1]) {
-        total += parseInt(usersInRoomsDict[key][0]);
-      }
-    }
-    active_users_element.innerText = "Active users in rooms: " + total + "  ツ";
-  });
+  );
 
   document.body.addEventListener("mousemove", function (event) {
     if (event.srcElement.id != canvas_element.id) {
@@ -128,9 +134,18 @@ function init() {
       : selectedBox.setAttribute("class", "selected-box");
     let pixelOffset = pixel[0] * PIXELSIZE * DIMENSION + 1;
     selectedBox.style.top =
-      (pixel[1] * PIXELSIZE * DIMENSION + 1 + PADDINGTOP).toString() + "px";
+      (
+        pixel[1] * PIXELSIZE * DIMENSION +
+        1 +
+        PADDINGTOP +
+        active_users_element.clientHeight
+      ).toString() + "px";
     selectedBox.style.left =
-      (pixelOffset + viewportOffset.left).toString() + "px";
+      (
+        pixelOffset +
+        viewportOffset.left -
+        (window.innerWidth > 1402 ? 0 : viewportOffset.x)
+      ).toString() + "px";
   });
 
   canvas_element.addEventListener("click", function (event) {
