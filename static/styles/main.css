@@ -114,6 +114,21 @@ body {
 .hidden {
   display: none !important;
 }
+.mx-2 {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.selected {
+  border: 2px solid black;
+}
 
 .preview-canvas-wrapper {
   position: relative;
@@ -194,11 +209,12 @@ body {
 
 .painter-header {
   border: black 2px solid;
-  max-height: 63px;
   padding: 5px;
   display: flex;
   margin-left: 2px;
   margin-right: 2px;
+  display: flex;
+  flex-direction: column;
 }
 
 .info-header {
@@ -206,6 +222,66 @@ body {
   border: black 2px solid;
   padding: 5px;
   font-size: 16px;
+}
+
+.dot {
+  height: 25px;
+  width: 25px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.hover {
+  cursor: pointer;
+}
+
+.red {
+  background-color: red;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.forrest {
+  background-color: greenyellow;
+}
+
+.green {
+  background-color: green;
+}
+
+.lightblue {
+  background-color: lightskyblue;
+}
+
+.darkblue {
+  background-color: darkblue;
+}
+
+.pink {
+  background-color: pink;
+}
+
+.purple {
+  background-color: purple;
+}
+
+.brown {
+  background-color: brown;
+}
+
+.gray {
+  background-color: gray;
+}
+
+.black {
+  background-color: black;
 }
 
 .checkbox-container {
@@ -310,9 +386,6 @@ body {
 
 .button:hover {
   box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-}
-.pickr + .button {
-  margin-left: 10px;
 }
 
 .button + .button {

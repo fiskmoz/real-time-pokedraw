@@ -1,30 +1,87 @@
-{% extends "base.html" %} {% block header_imports %}
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css"
-/>
-<!-- \'classic\' theme -->
-<script src="{{ url_for('static',filename='js/pickr.min.js') }}"></script>
-{% endblock %} {% block content %}
+{% extends "base.html" %} {% block header_imports %} {% endblock %} {% block
+content %}
 <div class="drawing-wrapper">
   <div class="draw-canvas-wrapper">
     <div class="painter-header">
-      <div id="picker"></div>
-      <input
-        type="button"
-        class="button"
-        value="Clear Canvas"
-        onclick="clear_canvas()"
-      />
-      <input
-        type="button"
-        id="stop_drawing_button"
-        class="button hidden"
-        value="Stop Drawing"
-        onclick="stop_drawing()"
-      />
+      <div class="mx-auto">
+        <input
+          type="button"
+          class="button"
+          value="Clear Canvas"
+          onclick="clear_canvas()"
+        />
+        <input
+          type="button"
+          id="stop_drawing_button"
+          class="button hidden"
+          value="Stop Drawing"
+          onclick="stop_drawing()"
+        />
+      </div>
       <div class="drawing-status">
         <div id="timer"></div>
+      </div>
+      <div class="mx-auto">
+        <div
+          id="#ff0000"
+          class="dot red hover mx-2"
+          onclick="select_color('#ff0000')"
+        ></div>
+        <div
+          id="#ffa500"
+          class="dot orange hover mx-2"
+          onclick="select_color('#ffa500')"
+        ></div>
+        <div
+          id="#ffff00"
+          class="dot yellow hover mx-2"
+          onclick="select_color('#ffff00')"
+        ></div>
+        <div
+          id="#adff2f"
+          class="dot forrest hover mx-2"
+          onclick="select_color('#adff2f')"
+        ></div>
+        <div
+          id="#008000"
+          class="dot green hover mx-2"
+          onclick="select_color('#008000')"
+        ></div>
+        <div
+          id="#87cefa"
+          class="dot lightblue hover mx-2"
+          onclick="select_color('#87cefa')"
+        ></div>
+        <div
+          id="#00008b"
+          class="dot darkblue hover mx-2"
+          onclick="select_color('#00008b')"
+        ></div>
+        <div
+          id="#ffc0cb"
+          class="dot pink hover mx-2"
+          onclick="select_color('#ffc0cb')"
+        ></div>
+        <div
+          id="#800080"
+          class="dot purple hover mx-2"
+          onclick="select_color('#800080')"
+        ></div>
+        <div
+          id="#a52a2a"
+          class="dot brown hover mx-2"
+          onclick="select_color('#a52a2a')"
+        ></div>
+        <div
+          id="#808080"
+          class="dot gray hover mx-2"
+          onclick="select_color('#808080')"
+        ></div>
+        <div
+          id="#000000"
+          class="dot black hover mx-2"
+          onclick="select_color('#000000')"
+        ></div>
       </div>
     </div>
     <canvas id="draw_canvas" class="draw-canvas watching"></canvas>

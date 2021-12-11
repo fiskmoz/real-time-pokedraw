@@ -10,6 +10,18 @@ const user_already_drawing_element = document.getElementById(
 );
 const users_score_list_element = document.getElementById("users_score_list");
 const users_status_list_element = document.getElementById("users_status_list");
+const red_element = document.getElementById("#ff0000");
+const orange_element = document.getElementById("#ffa500");
+const yellow_element = document.getElementById("#ffff00");
+const forrest_element = document.getElementById("#adff2f");
+const green_element = document.getElementById("#008000");
+const lightblue_element = document.getElementById("#87cefa");
+const darkblue_element = document.getElementById("#00008b");
+const pink_element = document.getElementById("#ffc0cb");
+const purple_element = document.getElementById("#800080");
+const brown_element = document.getElementById("#a52a2a");
+const gray_element = document.getElementById("#808080");
+const black_element = document.getElementById("#000000");
 const XSITE = get("x");
 const YSITE = get("y");
 const WIDTH = canvas_element.clientWidth;
@@ -25,7 +37,7 @@ let timeout;
 let timer = TIMERDEFAULT;
 let isWatching = true;
 let isDrawing = false;
-let selectedColor = "#42445A";
+let selectedColor = "#808080";
 let usersInLobby = "";
 let hasLeft = false;
 let updateUserScoreTimeout = null;
@@ -36,6 +48,8 @@ context.translate(0.5, 0.5);
 
 function init() {
   ClearCanvas();
+  UpdateColorSelection();
+
   db.collection("app")
     .doc(XSITE + "," + YSITE)
     .onSnapshot(function (doc) {
@@ -80,55 +94,6 @@ function init() {
       }
     });
 
-  const pickr = Pickr.create({
-    el: "#picker",
-    theme: "classic",
-    comparison: false,
-    showAlways: false,
-    swatches: [
-      "white",
-      "silver",
-      "gray",
-      "black",
-      "maroon",
-      "red",
-      "crimson",
-      "orangered",
-      "darkorange",
-      "orange",
-      "yellow",
-      "gold",
-      "greenyellow",
-      "lime",
-      "olive",
-      "darkgreen",
-      "forestgreen",
-      "aquamarine",
-      "aqua",
-      "teal",
-      "skyblue",
-      "blue",
-      "navy",
-      "deeppink",
-      "hotpink",
-      "fuchsia",
-      "blueviolet",
-      "purple",
-      "brown",
-      "saddlebrown",
-      "coral",
-      "khaki",
-    ],
-    components: {
-      preview: true,
-      opacity: false,
-      hue: false,
-      palette: true,
-      interaction: {
-        input: true,
-      },
-    },
-  });
   let checkboxJson = JSON.parse(localStorage.getItem("generations"));
   if (!!checkboxJson) SetDefaultCheckboxes(checkboxJson);
   let tutorialBoolean = JSON.parse(localStorage.getItem("tutorial"));
@@ -175,14 +140,6 @@ function init() {
   );
   canvas_element.addEventListener("mousemove", Fill, false);
   canvas_element.addEventListener("mousedown", Fill, false);
-  pickr.on("change", function () {
-    selectedColor = pickr.getColor().toHEXA().toString();
-    pickr.hide();
-    colorJustSelected = true;
-    setTimeout(() => {
-      colorJustSelected = false;
-    }, 100);
-  });
 
   window.stop_drawing = function () {
     save();
@@ -192,6 +149,15 @@ function init() {
   window.clear_canvas = function () {
     this.ClearCanvas();
     save();
+  };
+
+  window.select_color = function (color) {
+    selectedColor = color;
+    colorJustSelected = true;
+    UpdateColorSelection();
+    setTimeout(() => {
+      colorJustSelected = false;
+    }, 100);
   };
 
   window.start_countdown = async function () {
@@ -334,6 +300,49 @@ function ClearCanvas() {
     context.lineTo(WIDTH, y);
     context.stroke();
   }
+}
+
+function UpdateColorSelection() {
+  red_element.id == selectedColor
+    ? red_element.classList.add("selected")
+    : red_element.classList.remove("selected");
+  orange_element.id == selectedColor
+    ? orange_element.classList.add("selected")
+    : orange_element.classList.remove("selected");
+  yellow_element.id == selectedColor
+    ? yellow_element.classList.add("selected")
+    : yellow_element.classList.remove("selected");
+  forrest_element.id == selectedColor
+    ? forrest_element.classList.add("selected")
+    : forrest_element.classList.remove("selected");
+  green_element.id == selectedColor
+    ? green_element.classList.add("selected")
+    : green_element.classList.remove("selected");
+  lightblue_element.id == selectedColor
+    ? lightblue_element.classList.add("selected")
+    : lightblue_element.classList.remove("selected");
+  darkblue_element.id == selectedColor
+    ? darkblue_element.classList.add("selected")
+    : darkblue_element.classList.remove("selected");
+  pink_element.id == selectedColor
+    ? pink_element.classList.add("selected")
+    : pink_element.classList.remove("selected");
+  purple_element.id == selectedColor
+    ? purple_element.classList.add("selected")
+    : purple_element.classList.remove("selected");
+  brown_element.id == selectedColor
+    ? brown_element.classList.add("selected")
+    : brown_element.classList.remove("selected");
+  gray_element.id == selectedColor
+    ? gray_element.classList.add("selected")
+    : gray_element.classList.remove("selected");
+  black_element.id == selectedColor
+    ? black_element.classList.add("selected")
+    : black_element.classList.remove("selected");
+}
+
+function ToggleSelected(elem) {
+  elem.classList.remove("selected");
 }
 
 async function GetRandomPokemon() {
