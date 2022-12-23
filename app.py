@@ -1,25 +1,23 @@
-from flask import Flask, jsonify, render_template, request, Response
-
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
-
+""" flask is hosted from here """
 import datetime
 import os
-import sys
 import json
 import uuid
-import subprocess
+
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+from flask import Flask, render_template, request, Response
 
 app = Flask(__name__)
 
-cred = None
+CREDENTIALS = None
 # this will set the required credentials for firebase into os config for localhost.
 # rename firebase credentials file to firebase_cred.json
 if os.environ.get('project_id') is None:
-    with open("firebase_cred.json") as json_file:
+    with open("firebase_cred.json", encoding="utf8") as json_file:
         data = json.load(json_file)
-        cred = credentials.Certificate({
+        CREDENTIALS = credentials.Certificate({
             "type": data['type'],
             "project_id": data['project_id'],
             "private_key_id": data['private_key_id'],
@@ -35,7 +33,7 @@ if os.environ.get('project_id') is None:
         app.config['DEBUG'] = True
 
 if os.environ.get('project_id') is not None:
-    cred = credentials.Certificate({
+    CREDENTIALS = credentials.Certificate({
         "type": os.environ.get('type').replace('\\n', '\n'),
         "project_id": os.environ.get('project_id').replace('\\n', '\n'),
         "private_key_id": os.environ.get('private_key_id').replace('\\n', '\n'),
@@ -48,40 +46,43 @@ if os.environ.get('project_id') is not None:
         "client_x509_cert_url": os.environ.get('client_x509_cert_url').replace('\\n', '\n'),
     })
 
-if cred == None:
+if CREDENTIALS is None:
     raise RuntimeError("Failed to fetch firebase credentials")
 
-firebase_admin.initialize_app(cred)
+firebase_admin.initialize_app(CREDENTIALS)
 db = firestore.client()
 
 
 @app.route('/')
 def index():
+    """ return index page """
     return render_template("index.html")
 
 
 @app.route('/draw')
 def draw():
+    """ return draw page """
     return render_template("draw.html")
 
 
 @app.route('/endpoints/adjust_status')
 def adjust_drawing_status():
+    """ adjusts drwaing status """
     key = request.args.get('x') + ',' + request.args.get('y')
     user = request.args.get('user')
     is_drawing = request.args.get('isDrawing')
-    if key == "," or user == None or is_drawing == None:
+    if key == "," or user is None or is_drawing is None:
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')
-    room_ref = db.collection(u'app').document(key)
+    room_ref = db.collection('app').document(key)
     room_dict = room_ref.get().to_dict()
     is_already_drawing = False
     should_draw = False
-    if (is_drawing == "true"):
+    if is_drawing == "true":
         should_draw = True
 
-    if bool(room_dict) and should_draw == True:
+    if bool(room_dict) and should_draw is True:
         for _user in room_dict['users']:
-            if (room_dict['users'][_user]['isDrawing'] == True):
+            if room_dict['users'][_user]['isDrawing'] is True:
                 is_already_drawing = True
 
     if not is_already_drawing:
@@ -96,12 +97,13 @@ def adjust_drawing_status():
 
 @app.route('/endpoints/adjust_score')
 def adjust_score():
+    """ adjusts score inside room """
     key = request.args.get('x') + ',' + request.args.get('y')
     user = request.args.get('user')
     score = request.args.get('score')
-    if key == "," or user == None or score == None:
+    if key == "," or user is None or score is None:
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')
-    db.collection(u'app').document(key).update(
+    db.collection('app').document(key).update(
         {
             'users.' + user + ".score": score
         }
@@ -111,12 +113,13 @@ def adjust_score():
 
 @app.route('/endpoints/joining')
 def player_joining():
+    """ player joins room """
     key = request.args.get('x') + ',' + request.args.get('y')
     user = request.args.get('user')
     identifier = str(uuid.uuid4()).replace(' ', '').replace('-', '')
-    if key == "," or user == None:
+    if key == "," or user is None:
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')
-    room_ref = db.collection(u'app').document(key)
+    room_ref = db.collection('app').document(key)
     room_dict = room_ref.get().to_dict()
     if bool(room_dict):
         room_ref.update(
@@ -141,17 +144,18 @@ def player_joining():
                 }
             }
         })
-    responseData = json.dumps({'id': identifier})
-    return Response(responseData, status=200, mimetype='application/json')
+    response_data = json.dumps({'id': identifier})
+    return Response(response_data, status=200, mimetype='application/json')
 
 
 @app.route('/endpoints/leaving')
 def player_leave():
+    """ player leaves room """
     key = request.args.get('x') + ',' + request.args.get('y')
     user = request.args.get('user')
-    if key == "," or user == None:
+    if key == "," or user is None:
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')
-    db.collection(u'app').document(key).update(
+    db.collection('app').document(key).update(
         {
             'users.' + user: firestore.DELETE_FIELD  # pylint: disable=no-member
         }
@@ -161,28 +165,30 @@ def player_leave():
 
 @app.route('/endpoints/submit_drawing', methods=['POST'])
 def drawing_submitted():
+    """ player drawing submitted """
     key = request.args.get('x') + ',' + request.args.get('y')
-    data = request.data.decode("utf-8")
-    # TODO Validate pixel data sent thru
+    request_data = request.data.decode("utf-8")
     if key == ",":
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')
-    db.collection(u'app').document(key).update({"pixels": data})
+    db.collection('app').document(key).update({"pixels": request_data})
     return Response("{json:'data'}", status=200, mimetype='application/json')
 
 
 @app.route('/endpoints/pokedex')
 def get_pokemon():
-    _id = request.args.get('id')
-    if _id == None:
+    """ gets pokemon """
+    request_id = request.args.get('id')
+    if request_id is None:
         return Response("{error:'malformed request'}", status=400, mimetype='application/json')
     pokedex = json.load(open('static/json/pokedex.json', encoding="utf8"))
-    response_data = json.dumps(pokedex[_id])
+    response_data = json.dumps(pokedex[request_id])
     return Response(response_data, status=200, mimetype='application/json')
 
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def catch_all(path):
+def catch_all():
+    """ catch all other paths """
     return render_template("404.html")
 
 

@@ -1,3 +1,4 @@
 firebase_cred.json
 tmp/*
 !tmp/.gitkeep 
+/venv

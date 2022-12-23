@@ -33,3 +33,42 @@ Use `_scheduled_remove_inactive_users.py` in a scheudled manner to remove inacti
 
 For localhost download your credentials json from firebase, place in root folder and rename to `firebase_cred.json`.  
 In production, make sure credentials are placed inside os enviroment variables for whatever OS running.
+
+
+## Gettings started python specific
+
+### vscode extensions
+Python   
+Pylint
+
+Start venv in terminal (bash)
+```
+py -m venv venv
+source venv/Scripts/activate
+```
+Installing requirements and deactivating
+```
+pip install -r requirements.txt
+deactivate
+```
+
+If vscode fails to lint etc, select the virtual environment as the interpreter
+```
+ctrl+shift+p
+python select interpreter
+venv/Scripts/python  
+```
+To enable vscode formatting add this to user settings JSON
+```
+"python.formatting.autopep8Args": ["--max-line-length", "120", "--experimental"],
+```
+
+Update requirements
+
+```
+pip install pip-upgrader
+```
+
+```
+pip-upgrade
+```
